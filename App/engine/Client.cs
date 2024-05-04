@@ -1,5 +1,7 @@
 using System.Drawing;
 
+namespace BoschForms;
+
 public static class Client
 {
     private static string _mode = null;

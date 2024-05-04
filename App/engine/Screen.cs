@@ -1,5 +1,7 @@
 using System.Drawing;
 
+namespace BoschForms.Screen;
+
 public static class Screen
 {
     public static SizeF Dimension { get; set; } = new SizeF(1920, 1080);
@@ -31,4 +33,14 @@ public static class Screen
         => Rectangle(point.X, point.Y, size.Width, size.Height);
     public static RectangleF Rectangle(RectangleF rect)
         => Rectangle(rect.X, rect.Y, rect.Width, rect.Height);
+
+    public static Font Font(string name, float size, FontStyle style = FontStyle.Regular)
+        => new Font(name, size * ScaleY, style);
+
+    public static PointF OnScreen(this PointF point)
+        => Position(point);
+    public static SizeF OnScreen(this SizeF size)
+        => Size(size);
+    public static RectangleF OnScreen(this RectangleF rect)
+        => Rectangle(rect);
 }

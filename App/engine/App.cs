@@ -1,10 +1,15 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Windows.Forms;
+using BoschForms.Screen;
+
+namespace BoschForms;
 
 public static class App
 {
     public static IPage Page { get; private set; }
+    public static Color Background { get; set; }
 
     private static System.Windows.Forms.Form form = null;
     private static Bitmap bmp = null;
@@ -34,23 +39,19 @@ public static class App
         };
         pb.MouseMove += (o, e) =>
         {
-            Client.Cursor = e.Location;
-            Page.OnMouseMove(o, e);
-        };
-
-        pb.MouseWheel += (o, e) =>
-        {
-            Page.OnMouseMove(o, e);
+            PointF position = new PointF(e.Location.X, e.Location.Y);
+            Client.Cursor = position.OnScreen();
+            Page.OnMouseMove();
         };
 
         pb.MouseDown += (o, e) =>
         {
-            Page.OnMouseMove(o, e);
+            Page.OnMouseDown(e.Button);
         };
 
         pb.MouseUp += (o, e) =>
         {
-            Page.OnMouseMove(o, e);
+            Page.OnMouseUp(e.Button);
         };
 
         form.Load += delegate
@@ -83,10 +84,10 @@ public static class App
 
         timer.Tick += delegate
         {
-            g.Clear(Color.Black);
+            g.Clear(Background);
 
             Page.Update();
-            Page.Draw();
+            Page.Draw(g);
             pb.Refresh();
 
             Client.Frame = stopwatch.ElapsedMilliseconds;
