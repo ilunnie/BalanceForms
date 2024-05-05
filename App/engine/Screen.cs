@@ -36,6 +36,8 @@ public static class Screen
 
     public static Font Font(string name, float size, FontStyle style = FontStyle.Regular)
         => new Font(name, size * ScaleY, style);
+    public static Font Font(Font font)
+        => Font(font.Name, font.Size, font.Style);
 
     public static PointF OnScreen(this PointF point)
         => Position(point);
@@ -43,4 +45,6 @@ public static class Screen
         => Size(size);
     public static RectangleF OnScreen(this RectangleF rect)
         => Rectangle(rect);
+    public static Font OnScreen(this Font font)
+        => Font(font);
 }

@@ -11,6 +11,20 @@ public class Form
     public List<IInput> Inputs { get; private set; }
     private IInput Selected = null;
 
+    public Dictionary<string, IInput> Body {
+        get {
+            Dictionary<string, IInput> dict = new();
+
+            Inputs.ForEach(input => {
+                if (dict.ContainsKey(input.Name))
+                    dict[input.Name] = input;
+                else dict.Add(input.Name, input);
+            });
+
+            return dict;
+        }
+    }
+
     public Form(string name = "")
     {
         this.Name = name;

@@ -1,6 +1,5 @@
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using BoschForms.Screen;
 
 namespace BoschForms.Drawing;
 
@@ -19,10 +18,10 @@ public static partial class Elements
         var bottomRight = Screen.Screen.Rectangle(new PointF(rect.Right - 2 * bottomRightRadius, rect.Bottom - 2 * bottomRightRadius), new SizeF(2 * bottomRightRadius, 2 * bottomRightRadius));
         var bottomLeft = Screen.Screen.Rectangle(new PointF(rect.Left, rect.Bottom - 2 * bottomLeftRadius), new SizeF(2 * bottomLeftRadius, 2 * bottomLeftRadius));
 
-        if (topLeftRadius > 0) g.DrawArc(topLeft, 180, 90, pen);
-        if (topRightRadius > 0) g.DrawArc(topRight, 270, 90, pen);
-        if (bottomRightRadius > 0) g.DrawArc(bottomRight, 0, 90, pen);
-        if (bottomLeftRadius > 0) g.DrawArc(bottomLeft, 90, 90, pen);
+        if (topLeftRadius > 0) g.DrawArc(pen, topLeft, 180, 90);
+        if (topRightRadius > 0) g.DrawArc(pen, topRight, 270, 90);
+        if (bottomRightRadius > 0) g.DrawArc(pen, bottomRight, 0, 90);
+        if (bottomLeftRadius > 0) g.DrawArc(pen, bottomLeft, 90, 90);
 
         g.DrawLine(rect.Left + topLeftRadius, rect.Top, rect.Right - topRightRadius, rect.Top, pen);
         g.DrawLine(rect.Right, rect.Top + topRightRadius, rect.Right, rect.Bottom - bottomRightRadius, pen);

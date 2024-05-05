@@ -40,7 +40,9 @@ public static class App
         pb.MouseMove += (o, e) =>
         {
             PointF position = new PointF(e.Location.X, e.Location.Y);
-            Client.Cursor = position.OnScreen();
+            float scaleX = Screen.Screen.Width / Client.Screen.Width;
+            float scaleY = Screen.Screen.Height / Client.Screen.Height;
+            Client.Cursor = new PointF(position.X * scaleX, position.Y * scaleY);
             Page.OnMouseMove();
         };
 
