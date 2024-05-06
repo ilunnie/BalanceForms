@@ -8,7 +8,7 @@ namespace BoschForms.Forms;
 public interface IInput
 {
     string Name { get; }
-    Object Value { get; }
+    object Value { get; }
     public event Action<object> onChange;
     bool Enable { get; set; }
     public bool isDisabled { get; set; }
