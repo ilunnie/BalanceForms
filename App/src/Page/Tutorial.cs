@@ -7,6 +7,9 @@ public class Tutorial : Page
     public override void Load()
     {
         App.Background = Color.White;
+
+        // new Painel()
+
     }
 
     public override void Update()

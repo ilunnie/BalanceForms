@@ -100,6 +100,8 @@ public class Home : Page
                     BackgroundColor = Color.FromArgb(0,123,192),
                     Color = Color.White,
                     BorderRadius = 40,
+                    BorderColor = Color.Black,
+                    BorderWidth = 2
                 },
                 OnChange = Submit,
             }
