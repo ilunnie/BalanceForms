@@ -17,6 +17,7 @@ public class Home : Page
     public static DateTime Date;
     public override void Load()
     {
+        App.SetPage(new Tutorial()); // To remove
         App.Background = Color.White;
 
         var center = Screen.Center;
