@@ -1,5 +1,5 @@
 using System.Drawing;
-using System.Windows.Forms;
+// using System.Windows.Forms;
 using BoschForms;
 using BoschForms.Drawing;
 
@@ -130,12 +130,12 @@ public class Tutorial : Page
 
     }
 
-    public override void KeyboardDown(object o, KeyEventArgs e)
+    public override void KeyboardDown(object o, System.Windows.Forms.KeyEventArgs e)
     {
-        if (e.KeyCode == Keys.Escape)
+        if (e.KeyCode == System.Windows.Forms.Keys.Escape)
             App.Close();
 
-        if (e.KeyCode == Keys.Escape )
+        if (e.KeyCode == System.Windows.Forms.Keys.Escape )
             App.SetPage(new Close(this));
     }
 }
