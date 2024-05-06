@@ -1,12 +1,11 @@
 using System.Drawing;
-using System.Windows.Forms;
 using BoschForms;
-using BoschForms.Drawing;
 
 using BoschForms.Screen;
 using BoschForms.Forms;
 public class Tutorial : Page
 {
+    private Balanca Balanca = new Balanca(Screen.CenterX, Screen.CenterY);
     public override void Load()
     {
         App.Background = Color.White;
@@ -90,49 +89,19 @@ public class Tutorial : Page
         Forms.Add(botao);
     }
 
-    private float angle = 0;
     public override void Update()
     {
-
+        Balanca.Update();
     }
 
     public override void Draw(Graphics g)
     {
-        PointF center = Screen.Center;
-        float width = Screen.Width * .2f;
-        float height = Screen.Height;
-        float x = Screen.Width - width;
-        float y = 0;
-        string titutlo = "Bem vindo ao Tutorial!";
         
-        RectangleF shadow = new RectangleF(x * 0.998f, y * -1.01f, width, height);
-        SolidBrush shadowbrush = new SolidBrush(Color.FromArgb(100, 100, 100));
-        g.FillRectangle(shadow, (30, 0, 0, 30), shadowbrush);
-
-        RectangleF background = new RectangleF(x, y, width, height);
-        SolidBrush backbrush = new SolidBrush(Color.FromArgb(239, 241, 242));
-        g.FillRectangle(background, (30, 0, 0, 30), backbrush);
-
-
-        Font label = new Font("Arial", 15);
-        SolidBrush labelbrush = new SolidBrush(Color.Black);
-
-        StringFormat format = new StringFormat();
-        format.Alignment = StringAlignment.Center;
-        format.LineAlignment = StringAlignment.Center;
-        g.DrawString("Respostas", new RectangleF(x , 0, width, Screen.Height * 0.18f ), label, labelbrush, format);
-
-        // g.DrawString(titutlo, );
-
-        Forms.ForEach(form => form.Draw(g));
-        shadowbrush.Dispose();
-        backbrush.Dispose();
-
     }
 
-    public override void KeyboardDown(object o, KeyEventArgs e)
+    public override void KeyboardDown(object o, System.Windows.Forms.KeyEventArgs e)
     {
-        if (e.KeyCode == Keys.Escape)
+        if (e.KeyCode == System.Windows.Forms.Keys.Escape)
             App.Close();
 
         if (e.KeyCode == Keys.Escape )
