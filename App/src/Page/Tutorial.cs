@@ -121,5 +121,7 @@ public class Tutorial : Page
     {
         if (e.KeyCode == Keys.Escape)
             App.Close();
+        if (e.KeyCode == Keys.Enter)
+            App.SetPage(new Close());
     }
 }

@@ -148,7 +148,7 @@ public class Home : Page
 
     public override void KeyboardDown(object o, KeyEventArgs e)
     {
-        if (e.KeyCode == Keys.Escape)
-            App.Close();
+        if (e.KeyCode == Keys.Escape) // && Client.Mode == "debug"
+            App.SetPage(new Close(this));
     }
 }
