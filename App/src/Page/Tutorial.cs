@@ -1,13 +1,12 @@
+using System.Drawing;
+using System.Windows.Forms;
 using BoschForms;
 using BoschForms.Drawing;
-using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
-using Keys = System.Windows.Forms.Keys;
-using System.Drawing;
+
 using BoschForms.Screen;
 using BoschForms.Forms;
 public class Tutorial : Page
 {
-
     public override void Load()
     {
         App.Background = Color.White;
@@ -89,9 +88,9 @@ public class Tutorial : Page
         });
 
         Forms.Add(botao);
-
     }
 
+    private float angle = 0;
     public override void Update()
     {
 
@@ -128,12 +127,15 @@ public class Tutorial : Page
         Forms.ForEach(form => form.Draw(g));
         shadowbrush.Dispose();
         backbrush.Dispose();
+
     }
 
     public override void KeyboardDown(object o, KeyEventArgs e)
     {
+        if (e.KeyCode == Keys.Escape)
+            App.Close();
+
         if (e.KeyCode == Keys.Escape )
             App.SetPage(new Close(this));
-        
     }
 }
