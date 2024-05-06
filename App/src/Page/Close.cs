@@ -84,10 +84,10 @@ public class Close : Page
                 {
                     BackgroundColor = Color.White,
                     BorderColor = Color.Black,
-                    BorderWidth = 1,
+                    BorderWidth = 2,
                     BorderRadius = 10,
                 },
-                Selected = { BorderWidth = 2, BorderColor = Color.Blue, }
+                Selected = { BorderWidth = 2, BorderColor = Color.FromArgb(111, 111, 111), }
             },
             new TextInput(center.X - textInputWidth / 2, Screen.Height * .5f)
             {
@@ -98,10 +98,10 @@ public class Close : Page
                 {
                     BackgroundColor = Color.White,
                     BorderColor = Color.Black,
-                    BorderWidth = 1,
+                    BorderWidth = 2,
                     BorderRadius = 10,
                 },
-                Selected = { BorderWidth = 2, BorderColor = Color.Blue, }
+                Selected = { BorderWidth = 2, BorderColor = Color.FromArgb(111, 111, 111), }
             },
         }
             .Concat(
@@ -125,7 +125,7 @@ public class Close : Page
                     }
                     : new[]
                     {
-                        new Button(center.X + 0.5f * buttonWidth, Screen.Height * .62f)
+                        new Button(center.X + 0.44f * buttonWidth, Screen.Height * .62f)
                         {
                             Name = "Submit",
                             Value = close,
@@ -133,13 +133,15 @@ public class Close : Page
                             Size = new SizeF(buttonWidth, buttonHeight),
                             Style =
                             {
-                                BackgroundColor = Color.FromArgb(0, 123, 192),
+                                BackgroundColor = Color.FromArgb(0,123,192),
                                 Color = Color.White,
-                                BorderRadius = 40,
+                                BorderRadius = 15,
+                                BorderColor = Color.Black,
+                                BorderWidth = 2
                             },
                             OnChange = Submit,
                         },
-                        new Button(center.X - 1.5f * buttonWidth , Screen.Height * .62f)
+                        new Button(center.X - 1.44f * buttonWidth , Screen.Height * .62f)
                         {
                             Name = "Submit",
                             Value = close,
@@ -147,9 +149,11 @@ public class Close : Page
                             Size = new SizeF(buttonWidth, buttonHeight),
                             Style =
                             {
-                                BackgroundColor = Color.FromArgb(0, 123, 192),
+                                BackgroundColor = Color.FromArgb(0,123,192),
                                 Color = Color.White,
-                                BorderRadius = 40,
+                                BorderRadius = 15,
+                                BorderColor = Color.Black,
+                                BorderWidth = 2
                             },
                             OnChange = Voltar,
                         }

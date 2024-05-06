@@ -25,7 +25,7 @@ public class Styles
     public Color CursorColor { get; set; } = Color.Empty;
     public float CursorWidth { get; set; } = 2;
     public float? CursorHeight { get; set;} = null;
-    public int CursorTick { get; set; } = 120;
+    public int CursorTick { get; set; } = 360;
 }
 
 public static class StylesExtension

@@ -5,7 +5,6 @@ using Keys = System.Windows.Forms.Keys;
 using System.Drawing;
 using BoschForms.Screen;
 using BoschForms.Forms;
-using System.Collections.Generic;
 public class Tutorial : Page
 {
 
@@ -24,13 +23,18 @@ public class Tutorial : Page
         float positionXButton =  Screen.Width - width+ ( Screen.Width * .2f) / 2  - ( buttonWidth / 2);
         float positionXInput =  Screen.Width - width+ ( Screen.Width * .2f) / 2  - ( textInputWidth / 2);
 
-        void Submit(object obj)
+        void SubmitRespostas(object obj)
         {
             Form form = (Form)obj;
             var body = form.Body;
             bool succes = true;
+        }
 
-
+        void SubmitPesar(object obj)
+        {
+            Form form = (Form)obj;
+            var body = form.Body;
+            bool succes = true;
         }
 
         Form painel = new Form("Painel");
@@ -45,7 +49,7 @@ public class Tutorial : Page
                        Color = Color.Black,
                        BorderRadius = 10,
                        BorderColor = Color.Black,
-                       BorderWidth = 2
+                       BorderWidth = 2,
                     }
                 });
         }
@@ -58,15 +62,33 @@ public class Tutorial : Page
                 Style = {
                     BackgroundColor = Color.FromArgb(0,123,192),
                     Color = Color.White,
-                    BorderRadius = 40,
+                    BorderRadius = 10,
                     BorderColor = Color.Black,
                     BorderWidth = 2
                 },
-                OnChange = Submit,
+                OnChange = SubmitRespostas,
         });
 
         Forms.Add(painel);
-       
+
+        positionXButton =  Screen.Width / 2 - buttonWidth;
+        Form botao = new Form("botao");
+        botao.Append(new Button(positionXButton, Screen.Height * 0.82f){
+            Name = "Submit",
+                Value = painel,
+                Label = "Pesar",
+                Size = new SizeF(buttonWidth, buttonHeight),
+                Style = {
+                    BackgroundColor = Color.FromArgb(0,123,192),
+                    Color = Color.White,
+                    BorderRadius = 10,
+                    BorderColor = Color.Black,
+                    BorderWidth = 2,
+                },
+                OnChange = SubmitPesar,
+        });
+
+        Forms.Add(botao);
 
     }
 
@@ -77,23 +99,20 @@ public class Tutorial : Page
 
     public override void Draw(Graphics g)
     {
-        
-
         PointF center = Screen.Center;
         float width = Screen.Width * .2f;
         float height = Screen.Height;
         float x = Screen.Width - width;
         float y = 0;
+        string titutlo = "Bem vindo ao Tutorial!";
         
-
         RectangleF shadow = new RectangleF(x * 0.998f, y * -1.01f, width, height);
         SolidBrush shadowbrush = new SolidBrush(Color.FromArgb(100, 100, 100));
-        g.FillRectangle(shadow, 50, shadowbrush);
-
+        g.FillRectangle(shadow, (30, 0, 0, 30), shadowbrush);
 
         RectangleF background = new RectangleF(x, y, width, height);
         SolidBrush backbrush = new SolidBrush(Color.FromArgb(239, 241, 242));
-        g.FillRectangle(background, (50, 0, 0, 50), backbrush);
+        g.FillRectangle(background, (30, 0, 0, 30), backbrush);
 
 
         Font label = new Font("Arial", 15);
@@ -104,6 +123,8 @@ public class Tutorial : Page
         format.LineAlignment = StringAlignment.Center;
         g.DrawString("Respostas", new RectangleF(x , 0, width, Screen.Height * 0.18f ), label, labelbrush, format);
 
+        // g.DrawString(titutlo, );
+
         Forms.ForEach(form => form.Draw(g));
         shadowbrush.Dispose();
         backbrush.Dispose();
@@ -111,9 +132,8 @@ public class Tutorial : Page
 
     public override void KeyboardDown(object o, KeyEventArgs e)
     {
-        if (e.KeyCode == Keys.Escape)
-            App.Close();
-        if (e.KeyCode == Keys.Enter)
-            App.SetPage(new Close());
+        if (e.KeyCode == Keys.Escape )
+            App.SetPage(new Close(this));
+        
     }
 }
