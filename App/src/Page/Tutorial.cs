@@ -30,14 +30,6 @@ public class Tutorial : Page
             var body = form.Body;
             bool succes = true;
 
-            for (int i = 0; i < 5; i++)
-            {
-                var nome = i.ToString();
-                if(body[$"input{nome}"].Value.ToString() != "0")
-                {
-
-                }
-            }
 
         }
 
