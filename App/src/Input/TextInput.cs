@@ -9,7 +9,6 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using BoschForms;
-using BoschForms.Screen;
 using System.Collections.Generic;
 
 public class TextInput : IInput
@@ -58,10 +57,13 @@ public class TextInput : IInput
     public Styles Style { get; set; }
     public Styles Selected { get; set; }
     public Styles WithError { get; set; }
+    public Styles Disable { get; set; }
     private Styles _style
     {
         get
         {
+            if (this.isDisabled)
+                return Disable.Concat(Style);
             Styles style = new Styles();
             if (errors.Count > 0)
                 style = style.Concat(WithError);
@@ -76,6 +78,8 @@ public class TextInput : IInput
     private void ClearErrors(object obj) => errors.Clear();
 
     private long Frame = 0;
+
+    public bool isDisabled { get; set; } = false;
 
     public TextInput(PointF position, string name = "", string value = "")
     {
@@ -103,6 +107,10 @@ public class TextInput : IInput
             PlaceHolderColor = Color.Red,
             ErrorColor = Color.Red,
             ErrorFont = new Font("Arial", 10)
+        };
+        this.Disable = new Styles()
+        {
+            BackgroundColor = Color.FromArgb(225, 225, 225)
         };
         onChange += ClearErrors;
     }
@@ -136,7 +144,7 @@ public class TextInput : IInput
         SolidBrush fontcolor = new SolidBrush(style.Color);
         g.DrawString(textrect, text, style.Font, fontcolor);
 
-        if (this.Enable && DrawCursor)
+        if (this.Enable && !this.isDisabled && DrawCursor)
         {
             float x = g.MeasureString(text.Substring(0, this.Cursor - visible), style.Font).Width;
             RectangleF cur = new RectangleF(x + textrect.X, textrect.Y, style.CursorWidth, textrect.Height);
@@ -172,7 +180,7 @@ public class TextInput : IInput
 
     public void KeyBoardDown(object o, System.Windows.Forms.KeyEventArgs e)
     {
-        if (!this.Enable)
+        if (!this.Enable || this.isDisabled)
             return;
         if (char.IsLetterOrDigit((char)e.KeyCode))
         {

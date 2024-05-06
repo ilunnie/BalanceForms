@@ -11,6 +11,7 @@ public interface IInput
     Object Value { get; }
     public event Action<object> onChange;
     bool Enable { get; set; }
+    public bool isDisabled { get; set; }
     bool Contains(PointF point);
     void Draw(Graphics g);
     void MouseKeyDown(MouseButtons button);

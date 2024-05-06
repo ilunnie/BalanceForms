@@ -7,9 +7,9 @@ public class Styles
 
     // Border Styles
     public Color BorderColor { get; set; } = Color.Empty;
-    public int? _borderWidth { get; private set; } = null;
+    public int? _borderWidth { get; set; } = null;
     public int BorderWidth { get => _borderWidth ?? 0; set => _borderWidth = value; }
-    public (float, float, float, float)? _borderRays { get; private set; } = null;
+    public (float, float, float, float)? _borderRays { get; set; } = null;
     public (float, float, float, float) BorderRays { get => _borderRays ?? (0, 0, 0, 0); set => _borderRays = value; }
     public float BorderRadius { set => _borderRays = (value, value, value, value); }
 
@@ -33,8 +33,8 @@ public static class StylesExtension
         => new Styles() {
             BackgroundColor = a.BackgroundColor.IsEmpty ? b.BackgroundColor : a.BackgroundColor,
             BorderColor = a.BorderColor.IsEmpty ? b.BorderColor : a.BorderColor,
-            BorderWidth = a._borderWidth ?? b.BorderWidth,
-            BorderRays = a._borderRays is null ? b.BorderRays : a.BorderRays,
+            _borderWidth = a._borderWidth ?? b._borderWidth,
+            _borderRays = a._borderRays is null ? b._borderRays : a._borderRays,
             Font = a.Font ?? b.Font,
             Color = a.Color.IsEmpty ? b.Color : a.Color,
             PlaceHolderFont = a.PlaceHolderFont ?? b.PlaceHolderFont,

@@ -59,17 +59,18 @@ public class Form
     public virtual void OnKeyDown(object o, KeyEventArgs e)
     {
         IInput selected = this.Inputs.LastOrDefault(input => input.Enable);
+        List<IInput> toSelect = this.Inputs.Where(input => !input.isDisabled).ToList();
 
         switch (e.KeyCode)
         {
             case Keys.Tab:
                 selected.Enable = false;
-                this.Inputs[(this.Inputs.IndexOf(selected) + 1) % this.Inputs.Count]
+                toSelect[(toSelect.IndexOf(selected) + 1) % toSelect.Count]
                     .Enable = true;
             break;
             
             case Keys.Enter:
-                int index = (this.Inputs.IndexOf(selected) + 1) % this.Inputs.Count;
+                int index = (toSelect.IndexOf(selected) + 1) % toSelect.Count;
                 if (index != 0)
                 {
                     selected.Enable = false;

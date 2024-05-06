@@ -26,6 +26,17 @@ public class Button : IInput
     public string Label = "";
 
     public Styles Style { get; set; }
+    public Styles Disable { get; set; }
+    private Styles _style {
+        get
+        {
+            if (this.isDisabled)
+                return Disable.Concat(Style);
+            return Style;
+        }
+    }
+
+    public bool isDisabled { get; set; } = false;
 
     private List<string> errors = new();
     public List<string> Errors => errors;
@@ -38,6 +49,10 @@ public class Button : IInput
             Font = new Font("Arial", 12),
             Color = Color.Black,
         };
+        this.Disable = new Styles()
+        {
+            BackgroundColor = Color.FromArgb(225, 225, 225)
+        };
     }
     public Button(float x, float y)
     : this(new PointF(x, y)) { }
@@ -47,22 +62,23 @@ public class Button : IInput
 
     public void Draw(Graphics g)
     {
+        Styles style = _style;
         RectangleF rect = new RectangleF(this.Position, this.Size);
-        SolidBrush brush = new SolidBrush(Style.BackgroundColor);
-        g.FillRectangle(rect, Style.BorderRays, brush);
-        Pen pen = new Pen(Style.BorderColor, Style.BorderWidth);
-        if (Style.BorderWidth != 0)
-            g.DrawRectangle(rect, Style.BorderRays, pen);
+        SolidBrush brush = new SolidBrush(style.BackgroundColor);
+        g.FillRectangle(rect, style.BorderRays, brush);
+        Pen pen = new Pen(style.BorderColor, style.BorderWidth);
+        if (style.BorderWidth != 0)
+            g.DrawRectangle(rect, style.BorderRays, pen);
 
-        SolidBrush labelcolor = new SolidBrush(Style.Color);
-        g.DrawString(rect, Label, Style.Font, labelcolor, alignment: StringAlignment.Center);
+        SolidBrush labelcolor = new SolidBrush(style.Color);
+        g.DrawString(rect, Label, style.Font, labelcolor, alignment: StringAlignment.Center);
 
         labelcolor.Dispose();
     }
 
     public void KeyBoardDown(object o, System.Windows.Forms.KeyEventArgs e)
     {
-        if (e.KeyCode == Keys.Enter)
+        if (e.KeyCode == Keys.Enter && !isDisabled)
             onChange?.Invoke(_value);
     }
 
@@ -73,7 +89,7 @@ public class Button : IInput
 
     public void MouseKeyDown(System.Windows.Forms.MouseButtons button)
     {
-        if (button == MouseButtons.Left && Contains(Client.Cursor))
+        if (button == MouseButtons.Left && Contains(Client.Cursor) && !isDisabled)
             onChange?.Invoke(_value);
     }
 
