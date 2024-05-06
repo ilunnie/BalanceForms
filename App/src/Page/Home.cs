@@ -74,7 +74,7 @@ public class Home : Page
                 Selected = {
                     BorderWidth = 2,
                     BorderColor = Color.Blue,
-                }
+                },
             },
             new TextInput(center.X - textInputWidth / 2, Screen.Height * .5f) {
                 Name = "date",

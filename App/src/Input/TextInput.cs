@@ -147,7 +147,8 @@ public class TextInput : IInput
         if (this.Enable && !this.isDisabled && DrawCursor)
         {
             float x = g.MeasureString(text.Substring(0, this.Cursor - visible), style.Font).Width;
-            RectangleF cur = new RectangleF(x + textrect.X, textrect.Y, style.CursorWidth, textrect.Height);
+            float height = style.CursorHeight ?? style.Font.Height;
+            RectangleF cur = new RectangleF(x + textrect.X, textrect.Y + textrect.Height / 2 - height / 2, style.CursorWidth, height);
             SolidBrush cursorcolor = new SolidBrush(style.CursorColor);
             g.FillRectangle(cur, cursorcolor);
             cursorcolor.Dispose();
