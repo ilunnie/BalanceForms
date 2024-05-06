@@ -68,7 +68,7 @@ public class Home : Page
                 Style = {
                     BackgroundColor = Color.White,
                     BorderColor = Color.Black,
-                    BorderWidth = 1,
+                    BorderWidth = 2,
                     BorderRadius = 10,
                 },
                 Selected = {
@@ -83,7 +83,7 @@ public class Home : Page
                 Style = {
                     BackgroundColor = Color.White,
                     BorderColor = Color.Black,
-                    BorderWidth = 1,
+                    BorderWidth = 2,
                     BorderRadius = 10,
                 },
                 Selected = {
