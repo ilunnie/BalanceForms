@@ -24,6 +24,7 @@ public class Styles
     // Cursor
     public Color CursorColor { get; set; } = Color.Empty;
     public float CursorWidth { get; set; } = 2;
+    public float? CursorHeight { get; set;} = null;
     public int CursorTick { get; set; } = 120;
 }
 
@@ -41,6 +42,7 @@ public static class StylesExtension
             PlaceHolderColor = a.PlaceHolderColor.IsEmpty ? b.PlaceHolderColor : a.PlaceHolderColor,
             CursorColor = a.CursorColor.IsEmpty ? b.CursorColor : a.CursorColor,
             CursorWidth = a.CursorWidth,
+            CursorHeight = a.CursorHeight is null ? b.CursorHeight : a.CursorHeight,
             CursorTick = a.CursorTick,
             ErrorFont = a.ErrorFont ?? b.ErrorFont,
             ErrorColor = a.ErrorColor.IsEmpty ? b.ErrorColor : a.ErrorColor,
