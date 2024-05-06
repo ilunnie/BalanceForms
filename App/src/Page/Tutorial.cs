@@ -5,6 +5,7 @@ using Keys = System.Windows.Forms.Keys;
 using System.Drawing;
 using BoschForms.Screen;
 using BoschForms.Forms;
+using System.Security.Cryptography;
 public class Tutorial : Page
 {
 
@@ -105,6 +106,7 @@ public class Tutorial : Page
         float x = Screen.Width - width;
         float y = 0;
         string titutlo = "Bem vindo ao Tutorial!";
+        string enunciado = "Aqui você vai aprender como funciona esse desafio das balanças. Quero que você arraste os blocos para a balança e tente descobrir o pesos dessas peças";
         
         RectangleF shadow = new RectangleF(x * 0.998f, y * -1.01f, width, height);
         SolidBrush shadowbrush = new SolidBrush(Color.FromArgb(100, 100, 100));
@@ -122,8 +124,6 @@ public class Tutorial : Page
         format.Alignment = StringAlignment.Center;
         format.LineAlignment = StringAlignment.Center;
         g.DrawString("Respostas", new RectangleF(x , 0, width, Screen.Height * 0.18f ), label, labelbrush, format);
-
-        // g.DrawString(titutlo, );
 
         Forms.ForEach(form => form.Draw(g));
         shadowbrush.Dispose();

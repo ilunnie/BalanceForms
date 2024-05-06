@@ -128,7 +128,7 @@ public class Home : Page
         float x = center.X - width / 2;
         float y = center.Y - height / 2;
 
-        RectangleF shadow = new RectangleF(x * 1.01f, y * 1.012f, width, height);
+        RectangleF shadow = new RectangleF(x * 1.01f, y * 1.01f, width, height);
         SolidBrush shadowbrush = new SolidBrush(Color.FromArgb(100, 100, 100));
         g.FillRectangle(shadow, 50, shadowbrush);
 
@@ -148,11 +148,10 @@ public class Home : Page
 
     public override void KeyboardDown(object o, KeyEventArgs e)
     {
-        if (e.KeyCode == Keys.Escape)
-        {
-             e.Handled = true;
+
+
+       if (e.KeyCode == Keys.Escape || e.KeyCode == Keys.Menu || e.KeyCode == Keys.Tab)
             App.SetPage(new Close(this));
-        }
         
     }
 }
