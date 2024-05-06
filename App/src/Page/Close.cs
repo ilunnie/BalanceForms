@@ -8,10 +8,16 @@ using System.Collections.Generic;
 using BoschForms.Screen;
 using AForge.Imaging.Filters;
 using System;
+using Microsoft.VisualBasic;
+using System.Linq;
 
 public class Close : Page
 {
     private Bitmap Background;
+    public bool goBack;
+    public IPage LastPage;
+
+    public Close(IPage? lastPage = null) => this.LastPage = lastPage;
 
     public override void Load()
     {
@@ -57,56 +63,99 @@ public class Close : Page
             }
 
             if (succes)
-            {
                 App.Close();
-            }
+        }
+
+        void Voltar(object obj)
+        {
+            if (this.LastPage is not null)
+                App.SetPage(LastPage);
         }
 
         Form close = new Form("close");
-        close.Add = new List<IInput>(){
-            new TextInput(center.X - textInputWidth / 2, Screen.Height * .37f) {
+        close.Add = new List<IInput>()
+        {
+            new TextInput(center.X - textInputWidth / 2, Screen.Height * .37f)
+            {
                 Name = "user",
                 PlaceHolder = "Seu Usuário",
                 Size = new SizeF(textInputWidth, textInputHeight),
-                Style = {
+                Style =
+                {
                     BackgroundColor = Color.White,
                     BorderColor = Color.Black,
                     BorderWidth = 1,
                     BorderRadius = 10,
                 },
-                Selected = {
-                    BorderWidth = 2,
-                    BorderColor = Color.Blue,
-                }
+                Selected = { BorderWidth = 2, BorderColor = Color.Blue, }
             },
-            new TextInput(center.X - textInputWidth / 2, Screen.Height * .5f) {
+            new TextInput(center.X - textInputWidth / 2, Screen.Height * .5f)
+            {
                 Name = "password",
                 PlaceHolder = "Sua Senha",
                 Size = new SizeF(textInputWidth, textInputHeight),
-                Style = {
+                Style =
+                {
                     BackgroundColor = Color.White,
                     BorderColor = Color.Black,
                     BorderWidth = 1,
                     BorderRadius = 10,
                 },
-                Selected = {
-                    BorderWidth = 2,
-                    BorderColor = Color.Blue,
-                }
+                Selected = { BorderWidth = 2, BorderColor = Color.Blue, }
             },
-            new Button(center.X - buttonWidth / 2, Screen.Height * .62f) {
-                Name = "Submit",
-                Value = close,
-                Label = "Enviar",
-                Size = new SizeF(buttonWidth, buttonHeight),
-                Style = {
-                    BackgroundColor = Color.FromArgb(0,123,192),
-                    Color = Color.White,
-                    BorderRadius = 40,
-                },
-                OnChange = Submit,
-            }
-        };
+        }
+            .Concat(
+                this.LastPage is null
+                    ? new[]
+                    {
+                        new Button(center.X - buttonWidth / 2, Screen.Height * .62f)
+                        {
+                            Name = "Submit",
+                            Value = close,
+                            Label = "Enviar",
+                            Size = new SizeF(buttonWidth, buttonHeight),
+                            Style =
+                            {
+                                BackgroundColor = Color.FromArgb(0, 123, 192),
+                                Color = Color.White,
+                                BorderRadius = 40,
+                            },
+                            OnChange = Submit,
+                        }
+                    }
+                    : new[]
+                    {
+                        new Button(center.X + 0.5f * buttonWidth, Screen.Height * .62f)
+                        {
+                            Name = "Submit",
+                            Value = close,
+                            Label = "Enviar",
+                            Size = new SizeF(buttonWidth, buttonHeight),
+                            Style =
+                            {
+                                BackgroundColor = Color.FromArgb(0, 123, 192),
+                                Color = Color.White,
+                                BorderRadius = 40,
+                            },
+                            OnChange = Submit,
+                        },
+                        new Button(center.X - 1.5f * buttonWidth , Screen.Height * .62f)
+                        {
+                            Name = "Submit",
+                            Value = close,
+                            Label = "Voltar",
+                            Size = new SizeF(buttonWidth, buttonHeight),
+                            Style =
+                            {
+                                BackgroundColor = Color.FromArgb(0, 123, 192),
+                                Color = Color.White,
+                                BorderRadius = 40,
+                            },
+                            OnChange = Voltar,
+                        }
+                    }
+            )
+            .ToList();
 
         Forms.Add(close);
 
@@ -114,10 +163,7 @@ public class Close : Page
         Background = filter.Apply(new Bitmap("assets/bosch-entrada.jpg"));
     }
 
-    public override void Update()
-    {
-        
-    }
+    public override void Update() { }
 
     public override void Draw(Graphics g)
     {
@@ -139,8 +185,18 @@ public class Close : Page
 
         Font label = new Font("Arial", 15);
         SolidBrush labelbrush = new SolidBrush(Color.Black);
-        g.DrawString("Usuário:", new PointF(x + width * .22f, Screen.Height * .335f), label, labelbrush);
-        g.DrawString("Senha:", new PointF(x + width * .22f, Screen.Height * .465f), label, labelbrush);
+        g.DrawString(
+            "Usuário:",
+            new PointF(x + width * .22f, Screen.Height * .335f),
+            label,
+            labelbrush
+        );
+        g.DrawString(
+            "Senha:",
+            new PointF(x + width * .22f, Screen.Height * .465f),
+            label,
+            labelbrush
+        );
 
         Forms.ForEach(form => form.Draw(g));
         shadowbrush.Dispose();
@@ -148,8 +204,5 @@ public class Close : Page
     }
 
     public override void KeyboardDown(object o, KeyEventArgs e)
-    {
-        if (e.KeyCode == Keys.Escape)
-            App.Close();
-    }
+    { }
 }
