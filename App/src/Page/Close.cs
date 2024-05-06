@@ -73,6 +73,7 @@ public class Close : Page
         }
 
         Form close = new Form("close");
+        #region 
         close.Add = new List<IInput>()
         {
             new TextInput(center.X - textInputWidth / 2, Screen.Height * .37f)
@@ -160,7 +161,7 @@ public class Close : Page
                     }
             )
             .ToList();
-
+        #endregion
         Forms.Add(close);
 
         GaussianBlur filter = new GaussianBlur();
