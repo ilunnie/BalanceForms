@@ -74,7 +74,7 @@ public class Home : Page
                 },
                 Selected = {
                     BorderWidth = 2,
-                    BorderColor = Color.Blue,
+                    BorderColor = Color.FromArgb(111, 111, 111),
                 },
             },
             new TextInput(center.X - textInputWidth / 2, Screen.Height * .5f) {
@@ -89,7 +89,7 @@ public class Home : Page
                 },
                 Selected = {
                     BorderWidth = 2,
-                    BorderColor = Color.Blue,
+                    BorderColor = Color.FromArgb(111, 111, 111),
                 }
             },
             new Button(center.X - buttonWidth / 2, Screen.Height * .62f) {
@@ -100,7 +100,7 @@ public class Home : Page
                 Style = {
                     BackgroundColor = Color.FromArgb(0,123,192),
                     Color = Color.White,
-                    BorderRadius = 40,
+                    BorderRadius = 15,
                     BorderColor = Color.Black,
                     BorderWidth = 2
                 },
@@ -129,7 +129,7 @@ public class Home : Page
         float x = center.X - width / 2;
         float y = center.Y - height / 2;
 
-        RectangleF shadow = new RectangleF(x * 1.02f, y * 1.02f, width, height);
+        RectangleF shadow = new RectangleF(x * 1.01f, y * 1.012f, width, height);
         SolidBrush shadowbrush = new SolidBrush(Color.FromArgb(100, 100, 100));
         g.FillRectangle(shadow, 50, shadowbrush);
 
@@ -149,7 +149,12 @@ public class Home : Page
 
     public override void KeyboardDown(object o, KeyEventArgs e)
     {
-        if (e.KeyCode == Keys.Escape) // && Client.Mode == "debug"
+        if (e.KeyCode == Keys.Escape)
+        {
+             e.Handled = true;
             App.SetPage(new Close(this));
+        }
+        
     }
 }
+
