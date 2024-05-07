@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/style.css') }}">
+    <title>Document</title>
+</head>
+<body>
+    <header class="values-header">
+        <img src="{{ url_for('static',filename='img/nav-colors.png') }}" class="nav-colors"/>
+        <nav>
+            <img src="{{ url_for('static',filename='img/logo-bosch.png') }}" class="logo"/>
+            <form action="/" method="get">
+                <button class="nav-button" type="submit">Iniciar prova</button>
+            </form>
+        </nav>
+    </header>
+    <main class="values-main">
+        <form action="/change_values" method="post">
+            <h1>Defina os valores</h1>
+            <div class="test1" id="test1">
+                <h2>Prova 1</h2>
+                <label for="value1">Figura 1</label>
+                <input type="number" name="value1" id="value1" placeholder="Digite um valor..." autocomplete="off">
+                <label for="value2">Figura 2</label>
+                <input type="number" name="value2" id="value2" placeholder="Digite um valor..." autocomplete="off">
+                <label for="value3">Figura 3</label>
+                <input type="number" name="value3" id="value3" placeholder="Digite um valor..." autocomplete="off">
+                <label for="value4">Figura 4</label>
+                <input type="number" name="value4" id="value4" placeholder="Digite um valor..." autocomplete="off">
+                <label for="value5">Figura 5</label>
+                <input type="number" name="value5" id="value5" placeholder="Digite um valor..." autocomplete="off">
+            </div>
+            <div class="test2" id="test2">
+                <h2>Prova 2</h2>
+                <label for="value6">Figura 1</label>
+                <input type="number" name="value6" id="value6" placeholder="Digite um valor..." autocomplete="off">
+                <label for="value7">Figura 2</label>
+                <input type="number" name="value7" id="value7" placeholder="Digite um valor..." autocomplete="off">
+                <label for="value8">Figura 3</label>
+                <input type="number" name="value8" id="value8" placeholder="Digite um valor..." autocomplete="off">
+                <label for="value9">Figura 4</label>
+                <input type="number" name="value9" id="value9" placeholder="Digite um valor..." autocomplete="off">
+                <label for="value10">Figura 5</label>
+                <input type="number" name="value10" id="value10" placeholder="Digite um valor..." autocomplete="off">
+            </div>
+            <button class="default-button" type="button" id="next" onclick="nextValues()">Próxima</button>
+            <button class="default-button" type="submit" id="change">Alterar</button>
+            <script src="{{ url_for('static', filename='js/changevalues.js')}}"></script>
+        </form>
+    </main>
+</body>
+</html>
+

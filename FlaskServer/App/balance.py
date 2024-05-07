@@ -21,7 +21,33 @@ def index():
     return render_template(
             'final.html',
         )
-    
+
+@bp.route('/change_values', methods=['GET', 'POST'])
+def change_values():
+    global test_started
+    if request.method == 'GET':
+        test_started = 0
+        return render_template(
+            'changevalues.html',
+        )
+    values = request.form
+    with open("values.txt", "w") as file:
+        file.write(f"{values['value1']}, {values['value2']}, {values['value3']}, {values['value4']}, {values['value5']}\n")
+        file.write(f"{values['value6']}, {values['value7']}, {values['value8']}, {values['value9']}, {values['value10']}")
+    test_started = 0
+    return render_template(
+        'index.html',
+    )
+
+@bp.route('/values', methods=['GET'])
+def values():
+    values = {'prova1': [], 'prova2': []}
+    with open("values.txt", "r") as file:
+        tests_values = file.read().splitlines()
+        values['prova1'] = tests_values[0].split(', ')
+        values['prova2'] = tests_values[1].split(', ')
+    return values, 200
+
 @bp.route('/timer', methods=['GET', 'POST'])
 def timer():
     if request.method == 'GET':
@@ -42,9 +68,7 @@ def test_status():
         return {'response': test_started}, 200
     if test_started != 0:
         user_data = request.json
-
-        save_user_data(user_data)
-                
+        save_user_data(user_data) 
         return 'Respostas enviadas com sucesso.', 201
     return 'A prova ainda não foi iniciada ou já foi finalizada.', 403
     

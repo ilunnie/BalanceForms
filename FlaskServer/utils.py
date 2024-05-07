@@ -1,5 +1,4 @@
 from datetime import datetime
-from styles import default, correct, wrong
 
 def get_today_info():
     current_date = datetime.now()
@@ -15,11 +14,5 @@ def time_formatter(time):
     time = f"{hours:02d}:{minutes:02d}:{seconds:02d}"
     return time
 
-def verify_answer(answer):
-    return '✔' if answer == 2 else '✖' if answer == 1 else '➖'
-
-def define_formatting(answer):
-    return correct if answer == 2 else wrong if answer == 1 else default
-
 def define_formatting_by_answer(answer, correct_answer):
-    return correct if answer == correct_answer else default if answer == 0 else wrong
+    return 'correct' if answer == correct_answer else 'null' if answer == 0 else 'wrong'
