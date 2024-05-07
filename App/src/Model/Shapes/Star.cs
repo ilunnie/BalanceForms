@@ -48,7 +48,7 @@ public class Star : Object
         this.Weight = weight;
         this.Image = image;
         this.Position = position;
-        this.Size = new SizeF(100, 100);
+        this.Size = new SizeF(110, 110);
     }
     public Star(int weight = 500) : this(new PointF(0, 0), weight) {}
 
