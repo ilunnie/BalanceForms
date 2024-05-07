@@ -7,6 +7,7 @@ public abstract class Game : Page
 {
     public List<Balance> Balances = new();
     private Dictionary<Type, List<Object>> _objects = new();
+    public Dictionary<Type, List<Object>> DictObjects => _objects;
     public List<Object> Objects => GetObjects();
 
     public Game AddObject(Object _object)

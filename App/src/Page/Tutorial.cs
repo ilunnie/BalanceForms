@@ -7,10 +7,10 @@ using BoschForms.Screen;
 using BoschForms.Forms;
 using System.Security.Cryptography;
 using System.Collections.Generic;
+using System;
 
-public class Tutorial : Page
+public class Tutorial : Game
 {
-    private Balanca Balanca = new Balanca(Screen.CenterX, Screen.CenterY);
     public override void Load()
     {
 
@@ -29,6 +29,11 @@ public class Tutorial : Page
         GenerateLeftPanel();
         GeneratePesarButton();
         GenerateRightPanel();
+
+        Balances.Add(new Balance(
+                (Screen.Width / 2) -  75, (Screen.Height / 2) - 75
+            )
+        );
     }
 
     public override void Update() { }
@@ -66,6 +71,7 @@ public class Tutorial : Page
         #endregion
         
         DrawForm(g, x, width);
+        Balances.ForEach(balance => balance.Draw(g));
        
         shadowRbrush.Dispose();
         backbrushR.Dispose();
@@ -88,11 +94,14 @@ public class Tutorial : Page
         float positionXInput = (width / 2) - 50;
 
         float gap = 170;
-        // Formas[new Square(new PointF(positionXInput, height - 2 * gap), 1000)] = 5;
-        // Formas[new Circle(new PointF(positionXInput, height - gap), 750)] = 5;
-        // Formas[new Triangle(new PointF(positionXInput, height), 500)] = 5;
-        // Formas[new Hexagon(new PointF(positionXInput, height + gap), 100)] = 5;
-        // Formas[new Star(new PointF(positionXInput, height - 5 + 2 * gap), 200)] = 5; // 110 x 110
+        for (int i = 0; i < 5; i++)
+        {
+            AddObject(new Square(new PointF(positionXInput, height - 2 * gap), 1000));
+            AddObject(new Circle(new PointF(positionXInput, height - gap), 750));
+            AddObject(new Triangle(new PointF(positionXInput, height), 500));
+            AddObject(new Hexagon(new PointF(positionXInput, height + gap), 100));
+            AddObject(new Star(new PointF(positionXInput, height - 5 + 2 * gap), 200)); // 110x110
+        }
     }
 
     private void GeneratePesarButton()
@@ -223,15 +232,10 @@ public class Tutorial : Page
         );
 
         // Playable Shapes
-        foreach (var shape in Formas)
-        {
-            var s = shape.Key;
-            g.DrawImage(
-                new Bitmap(s.Image),
-                new PointF(s.Position.X, s.Position.Y),
-                new SizeF(100, 100)
-            );
-        }
+        // TODO: Make the number of pieces appear
+        Dictionary<Type, List<Object>> PlayShapes = this.DictObjects;
+
+        this.Objects.ForEach(obj => obj.Draw(g));
 
         // Display Shapes
         Object[] shapes =
@@ -255,4 +259,12 @@ public class Tutorial : Page
         Forms.ForEach(form => form.Draw(g));
     }
 
+    public override void MouseMove()
+        => Cursor.Move();
+
+    public override void MouseDown(System.Windows.Forms.MouseButtons button)
+        => Cursor.Click();
+
+    public override void MouseUp(System.Windows.Forms.MouseButtons button)
+        => Cursor.Drop();
 }

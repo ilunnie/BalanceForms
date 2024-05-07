@@ -21,7 +21,7 @@ public class Balance
     public Weight Weight { get; private set; } = Weight.Balanced;
     public int Count => Plates.Sum(plate => plate.Count);
 
-    public Balance(float x, float y, float width = 200, float height = 200, float distance = 300)
+    public Balance(float x, float y, float width = 150, float height = 150, float distance = 200)
     {
         this.Position = new PointF(x, y);
         this.Size = new SizeF(width, height);
@@ -56,8 +56,8 @@ public class Balance
     {
         Pen pen = new Pen(Color.FromArgb(57, 74, 92), 20 * Math.Max(Screen.ScaleX, Screen.ScaleY));
         g.DrawLine(Left.AnchorScreen, Right.AnchorScreen, pen);
-        float rx = 25 * Screen.ScaleX;
-        float ry = 25 * Screen.ScaleY;
+        float rx = this.Size.Width * .125f * Screen.ScaleX;
+        float ry = this.Size.Height * .125f * Screen.ScaleY;
         g.FillEllipse(Position.X + Anchor.X - rx, Position.Y + Anchor.Y - ry, rx*2, ry*2, Brushes.White);
         Elements.DrawImage(g, this.Image, this.Rectangle);
         this.Left.Draw(g);
