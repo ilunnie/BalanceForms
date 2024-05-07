@@ -96,15 +96,14 @@ public class Tutorial : Page
 
     public override void Draw(Graphics g)
     {
-        
+        Balanca.Draw(g);
     }
 
     public override void KeyboardDown(object o, System.Windows.Forms.KeyEventArgs e)
     {
-        if (e.KeyCode == System.Windows.Forms.Keys.Escape)
+        if (Client.Mode == "debug" && e.KeyCode == System.Windows.Forms.Keys.Escape)
             App.Close();
-
-        if (e.KeyCode == Keys.Escape )
+        if (e.KeyCode == System.Windows.Forms.Keys.Escape)
             App.SetPage(new Close(this));
     }
 }
