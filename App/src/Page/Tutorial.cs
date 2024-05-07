@@ -82,7 +82,8 @@ public class Tutorial : Page
         // FORMAS NÃO RESPONSIVAS
         foreach (var shape in Formas)
         {
-            g.DrawImage(shape.Key.Image, shape.Key.Position);
+            var s = shape.Key;
+            g.DrawImage(new Bitmap(s.Image), new PointF(s.Position.X, s.Position.Y), new SizeF(100, 100));
         }
 
         Forms.ForEach(form => form.Draw(g));
