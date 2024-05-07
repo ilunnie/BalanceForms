@@ -10,6 +10,8 @@ public class Plate
     public Image image { get; set; } = Image.FromFile("assets/prato.png");
     public Balanca Balance { get; set; }
     public List<Object> Objects { get; set; } = new List<Object>();
+    public SizeF ObjectsSize { get; set; } = new SizeF(75, 75);
+    public bool ClassifyObject { get; set; } = true;
     public int Count => Objects.Count;
     public int Weight => Objects.Sum(obj => obj.Weight);
 
@@ -39,13 +41,11 @@ public class Plate
         {
             float angleDifference = angle - lastangle.Value;
 
-            // Normaliza a diferença de ângulo para o intervalo [-180, 180] graus
             if (angleDifference > 180)
                 angleDifference -= 360;
             else if (angleDifference < -180)
                 angleDifference += 360;
 
-            // Move na direção mais curta
             angle = lastangle.Value + MathF.Sign(angleDifference) * Math.Min(MathF.Abs(angleDifference), Speed);
         }
 
@@ -66,6 +66,56 @@ public class Plate
         g.FillEllipse(Position.X + Anchor.X - r, Position.Y + Anchor.Y - r, r * 2, r * 2, Brushes.White);
         Elements.DrawImage(g, this.image, this.Rectangle);
 
-        g.DrawRectangle(this.Area, Pens.Blue);
+        DrawShapes(g);
+
+        g.DrawRectangle(this.Area, this.Area.Contains(BoschForms.Client.Cursor) ? Pens.Red : Pens.Blue);
+    }
+
+    private void DrawShapes(Graphics g)
+    {
+        RectangleF area = this.Area;
+        SizeF size = this.ObjectsSize;
+
+        float x = area.X;
+        float y = area.Bottom - size.Height;
+
+        int max_column = (int)(area.Width / size.Width);
+        float error = area.Width % size.Width;
+
+        Dictionary<Type, (RectangleF, int)> classes = new Dictionary<Type, (RectangleF, int)>();
+
+        float column = 0;
+        float line = 0;
+        foreach (var item in Objects)
+        {
+            if (ClassifyObject && classes.ContainsKey(item.GetType()))
+            {
+                (RectangleF, int) value = classes[item.GetType()];
+                classes[item.GetType()] = (value.Item1, value.Item2 + 1);
+                continue;
+            }
+
+            PointF position = new PointF(x + (size.Width * column) + error / 2, y - (size.Height * line));
+            var obj = item.Clone();
+            obj.Size = size;
+            obj.Position = position;
+            obj.Draw(g);
+
+            if (ClassifyObject)
+                classes.Add(item.GetType(), (obj.Rectangle, 1));
+
+            column++;
+            if (!(column < max_column))
+            {
+                column = 0;
+                line++;
+            }
+        }
+
+        foreach (var type in classes)
+        {
+            Font font = new Font("Arial", 10);
+            g.DrawString(type.Value.Item1, type.Value.Item2.ToString(), font, Brushes.White, alignment: StringAlignment.Center);
+        }
     }
 }
