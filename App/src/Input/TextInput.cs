@@ -80,6 +80,7 @@ public class TextInput : IInput
     private long Frame = 0;
 
     public bool isDisabled { get; set; } = false;
+    public bool PasswordChar { get; set; } = false;
 
     public TextInput(PointF position, string name = "", string value = "")
     {
@@ -135,6 +136,8 @@ public class TextInput : IInput
                 break;
         }
         string text = _value.Substring(visible);
+        if (PasswordChar)
+            text = new string('•', _value.Length);
         SolidBrush brush = new SolidBrush(style.BackgroundColor);
         g.FillRectangle(rect, style.BorderRays, brush);
         Pen pen = new Pen(style.BorderColor, style.BorderWidth);

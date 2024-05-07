@@ -132,9 +132,6 @@ public class Tutorial : Page
 
     public override void KeyboardDown(object o, System.Windows.Forms.KeyEventArgs e)
     {
-        if (e.KeyCode == System.Windows.Forms.Keys.Escape)
-            App.Close();
-
         if (e.KeyCode == System.Windows.Forms.Keys.Escape )
             App.SetPage(new Close(this));
     }

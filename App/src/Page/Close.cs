@@ -94,6 +94,7 @@ public class Close : Page
             {
                 Name = "password",
                 PlaceHolder = "Sua Senha",
+                PasswordChar = true,
                 Size = new SizeF(textInputWidth, textInputHeight),
                 Style =
                 {
