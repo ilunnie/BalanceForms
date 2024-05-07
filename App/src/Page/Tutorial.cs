@@ -6,8 +6,10 @@ using BoschForms.Drawing;
 using BoschForms.Screen;
 using BoschForms.Forms;
 using System.Security.Cryptography;
+using System.Collections.Generic;
 public class Tutorial : Page
 {
+    public Dictionary<Object, int> Formas = new();
     public override void Load()
     {
         App.Background = Color.White;
@@ -77,6 +79,12 @@ public class Tutorial : Page
         };
         g.DrawString("Respostas", new RectangleF(x, 0, width, Screen.Height * 0.18f), label, labelbrush, format);
 
+        // FORMAS NÃO RESPONSIVAS
+        foreach (var shape in Formas)
+        {
+            g.DrawImage(shape.Key.Image, shape.Key.Position);
+        }
+
         Forms.ForEach(form => form.Draw(g));
         shadowRbrush.Dispose();
         backbrushR.Dispose();
@@ -100,11 +108,16 @@ public class Tutorial : Page
         float width = Screen.Width * .2f;
         float x = Screen.Width - width + 80;
         float y = 200;
-        float buttonWidth = 200;
         float buttonHeight = 80;
-        float positionXButton = Screen.Width - width + (Screen.Width * .2f) / 2 - (buttonWidth / 2);
-        float positionXInput = Screen.Width - width + (Screen.Width * .2f) / 2 - (textInputWidth / 2);
-        Form painel = new Form("Painel");
+
+        float positionXInput = width / 2;
+
+        // FORMAS NÃO RESPONSIVAS
+        Formas[new Circle   (new PointF(positionXInput, 120), 750)] = 5;
+        Formas[new Square   (new PointF(positionXInput, 240), 1000)] = 5;
+        Formas[new Triangle (new PointF(positionXInput, 360), 500)] = 5;
+        Formas[new Star     (new PointF(positionXInput, 480), 200)] = 5;
+        Formas[new Hexagon  (new PointF(positionXInput, 600), 100)] = 5;
     }
 
     private void GeneratePesarButton()
