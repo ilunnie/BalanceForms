@@ -42,20 +42,6 @@ public class Balanca
 
         this.Left.Update(180);
         this.Right.Update(0);
-
-        //ToDo Delete before Merge
-        this.Left.Objects.Add(new Circle());
-        this.Left.Objects.Add(new Hexagon());
-        this.Left.Objects.Add(new Square());
-        this.Left.Objects.Add(new Star());
-        this.Left.Objects.Add(new Triangle());
-
-        this.Right.Objects.Add(new Circle());
-        this.Right.Objects.Add(new Circle());
-        this.Right.Objects.Add(new Circle());
-        this.Right.Objects.Add(new Star());
-        this.Right.Objects.Add(new Star());
-        // ========
     }
 
     public void Update()
