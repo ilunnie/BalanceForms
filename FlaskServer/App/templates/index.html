@@ -11,6 +11,9 @@
         <img src="{{ url_for('static',filename='img/nav-colors.png') }}" class="nav-colors"/>
         <nav>
             <img src="{{ url_for('static',filename='img/logo-bosch.png') }}" class="logo"/>
+            <form action="/change_values" method="get">
+                <button class="nav-button" type="submit">Trocar valores</button>
+            </form>
         </nav>
     </header>
     <main>
@@ -21,7 +24,7 @@
                 <input type="text" name="minutes" placeholder="Tempo padrão: 30 minutos" id="time" autocomplete="off">
                 <div class="error" id="error"></div>
             </div>
-            <button type="submit" id="button">Iniciar prova</button>
+            <button class="default-button" type="submit" id="button">Iniciar prova</button>
             <script src="{{ url_for('static', filename='js/verify.js')}}"></script>
         </form>
     </main>
