@@ -32,9 +32,6 @@ public class Tutorial : Page
         GenerateRightPanel();
     }
 
-    public override void Update()
-    {
-
     public override void Update() { }
 
     public override void Draw(Graphics g)
