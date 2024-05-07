@@ -36,7 +36,6 @@ public class Tutorial : Page
 
     public override void Draw(Graphics g)
     {
-        PointF center = Screen.Center;
         float width = Screen.Width * 0.16f;
         float height = Screen.Height;
         float x = Screen.Width - width;
@@ -44,11 +43,6 @@ public class Tutorial : Page
         string titutlo = "Bem vindo ao Tutorial!";
         string enunciado =
             "Aqui você vai aprender como funciona esse desafio das balanças. Quero que você arraste os blocos para a balança e tente descobrir o pesos dessas peças";
-        float shapeWidth = Screen.Width * 0.16f;
-        float shapeHeight = 40;
-        float shapeY = 200;
-        float textInputWidth = Screen.Width * .08f;
-        float positionXInput = Screen.Width - shapeWidth + (shapeWidth) / 3 - (textInputWidth / 2);
 
         // Left Panel
         #region
@@ -71,54 +65,9 @@ public class Tutorial : Page
         SolidBrush backbrushR = new SolidBrush(Color.FromArgb(239, 241, 242));
         g.FillRectangle(backgroundR, (30, 0, 0, 30), backbrushR);
         #endregion
-
-        Font label = new Font("Arial", 15);
-        SolidBrush labelbrush = new SolidBrush(Color.Black);
-
-        StringFormat format = new StringFormat()
-        {
-            Alignment = StringAlignment.Center,
-            LineAlignment = StringAlignment.Center
-        };
-        g.DrawString(
-            "Respostas",
-            new RectangleF(x, 0, width, Screen.Height * 0.18f),
-            label,
-            labelbrush,
-            format
-        );
-
-        // Playable Shapes
-        foreach (var shape in Formas)
-        {
-            var s = shape.Key;
-            g.DrawImage(
-                new Bitmap(s.Image),
-                new PointF(s.Position.X, s.Position.Y),
-                new SizeF(100, 100)
-            );
-        }
-
-        // Display Shapes
-        Object[] shapes =
-        {
-            new Square(new PointF(positionXInput, shapeHeight)),
-            new Circle(new PointF(positionXInput, shapeHeight)),
-            new Triangle(new PointF(positionXInput, shapeHeight)),
-            new Hexagon(new PointF(positionXInput, shapeHeight)),
-            new Star(new PointF(positionXInput, shapeHeight)),
-        };
-
-        for (int i = 0; i < 5; i++)
-        {
-            g.DrawImage(
-                new Bitmap(shapes[i].Image),
-                new PointF(shapes[i].Position.X, shapeY + i * 120 ),
-                new SizeF(45, 45)
-            );
-        }
-
-        Forms.ForEach(form => form.Draw(g));
+        
+        DrawForm(g, x, width);
+       
         shadowRbrush.Dispose();
         backbrushR.Dispose();
     }
@@ -134,14 +83,8 @@ public class Tutorial : Page
 
     private void GenerateLeftPanel()
     {
-        var center = Screen.Center;
-        float textInputWidth = Screen.Width * .16f;
-        float textInputHeight = 50;
         float width = Screen.Width * .08f;
         float height = (Screen.Height / 2) - 50;
-        float x = Screen.Width - width + 80;
-        float y = 200;
-        float buttonHeight = 80;
 
         float positionXInput = (width / 2) - 50;
 
@@ -162,7 +105,6 @@ public class Tutorial : Page
         void SubmitPesar(object obj)
         {
             Form form = (Form)obj;
-            var body = form.Body;
             bool succes = true;
         }
 
@@ -256,4 +198,62 @@ public class Tutorial : Page
 
         Forms.Add(painel);
     }
+
+    private void DrawForm(Graphics g, float x, float width)
+    {
+        float shapeWidth = Screen.Width * 0.16f;
+        float shapeHeight = 40;
+        float shapeY = 200;
+        float textInputWidth = Screen.Width * .08f;
+        float positionXInput = Screen.Width - shapeWidth + (shapeWidth) / 3 - (textInputWidth / 2);
+
+        Font label = new Font("Arial", 15);
+        SolidBrush labelbrush = new SolidBrush(Color.Black);
+
+        StringFormat format = new StringFormat()
+        {
+            Alignment = StringAlignment.Center,
+            LineAlignment = StringAlignment.Center
+        };
+        g.DrawString(
+            "Respostas",
+            new RectangleF(x, 0, width, Screen.Height * 0.18f),
+            label,
+            labelbrush,
+            format
+        );
+
+        // Playable Shapes
+        foreach (var shape in Formas)
+        {
+            var s = shape.Key;
+            g.DrawImage(
+                new Bitmap(s.Image),
+                new PointF(s.Position.X, s.Position.Y),
+                new SizeF(100, 100)
+            );
+        }
+
+        // Display Shapes
+        Object[] shapes =
+        {
+            new Square(new PointF(positionXInput, shapeHeight)),
+            new Circle(new PointF(positionXInput, shapeHeight)),
+            new Triangle(new PointF(positionXInput, shapeHeight)),
+            new Hexagon(new PointF(positionXInput, shapeHeight)),
+            new Star(new PointF(positionXInput, shapeHeight)),
+        };
+
+        for (int i = 0; i < 5; i++)
+        {
+            g.DrawImage(
+                new Bitmap(shapes[i].Image),
+                new PointF(shapes[i].Position.X, shapeY + i * 120 ),
+                new SizeF(45, 45)
+            );
+        }
+
+        Forms.ForEach(form => form.Draw(g));
+    }
+
 }
