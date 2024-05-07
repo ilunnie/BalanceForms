@@ -17,7 +17,7 @@ public class Close : Page
     public bool goBack;
     public IPage LastPage;
 
-    public Close(IPage? lastPage = null) => this.LastPage = lastPage;
+    public Close(IPage lastPage = null) => this.LastPage = lastPage;
 
     public override void Load()
     {

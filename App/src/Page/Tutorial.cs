@@ -14,7 +14,6 @@ public class Tutorial : Page
 
     public override void Load()
     {
-        App.Background = Color.White;
 
         var center = Screen.Center;
         float textInputWidth = Screen.Width * .15f;
@@ -33,7 +32,8 @@ public class Tutorial : Page
         GenerateRightPanel();
     }
 
-    private float angle = 0;
+    public override void Update()
+    {
 
     public override void Update() { }
 

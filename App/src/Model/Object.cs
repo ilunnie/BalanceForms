@@ -13,14 +13,14 @@ public abstract class Object
     public float Y => Position.Y;
     public float Width => Size.Width;
     public float Height => Size.Height;
-    public RectangleF HitBox => new RectangleF(Position, Size);
+    public RectangleF Rectangle => new RectangleF(Position, Size);
 
     public virtual float CenterX => X + Width / 2;
     public virtual float CenterY => Y + Height / 2;
     public virtual PointF Center => new PointF(CenterX, CenterY);
 
     public virtual void Draw(Graphics g)
-        => g.DrawImage(Image, HitBox);
+        => g.DrawImage(Image, Rectangle);
 
     public abstract Object Clone();
 }
