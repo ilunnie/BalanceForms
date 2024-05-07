@@ -12,7 +12,6 @@ public class Tutorial : Page
     public Dictionary<Object, int> Formas = new();
     public override void Load()
     {
-        App.Background = Color.White;
 
         var center = Screen.Center;
         float textInputWidth = Screen.Width * .15f;
@@ -31,7 +30,6 @@ public class Tutorial : Page
 
     }
 
-    private float angle = 0;
     public override void Update()
     {
 
