@@ -1,5 +1,6 @@
 using System;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using BoschForms.Drawing;
 using Screen = BoschForms.Screen.Screen;
@@ -17,6 +18,9 @@ public class Balanca
     public Plate[] Plates{ get; private set; }
     public Plate Left => Plates[0];
     public Plate Right => Plates[1];
+
+    public Weight Weight { get; private set; } = Weight.Balanced;
+    public int Count => Plates.Sum(plate => plate.Count);
 
     public Balanca(float x, float y, float width = 200, float height = 200, float distance = 300)
     {
@@ -36,14 +40,17 @@ public class Balanca
         PointF platePoint = new PointF(plateSize.Width * .5f, plateSize.Height * .77f);
         this.Left.Anchor = platePoint;
         this.Right.Anchor = platePoint;
+
+        this.Left.Update(180);
+        this.Right.Update(0);
     }
 
-    private float angle = 0;
     public void Update()
     {
+        int Movement = 20;
+        int angle = 180 + (-(int)Weight * Movement);
         this.Left.Update(angle);
         this.Right.Update(angle + 180);
-        angle++;
     }
 
     public void Draw(Graphics g)
@@ -56,5 +63,12 @@ public class Balanca
         Elements.DrawImage(g, this.Image, this.Rectangle);
         this.Left.Draw(g);
         this.Right.Draw(g);
+    }
+
+    public void ToWeight()
+    {
+        int left = this.Left.Count;
+        int right = this.Right.Count;
+        this.Weight = (Weight)left.CompareTo(right);
     }
 }

@@ -20,17 +20,36 @@ public class Plate
     public float Width => Size.Width;
     public float Height => Size.Height;
     public RectangleF Rectangle => new RectangleF(Position, Size);
-    public RectangleF Area {
-        get {
+    public RectangleF Area
+    {
+        get
+        {
             float height = 2 * Width;
             return new RectangleF(X, Y - height, Width, height);
         }
     }
     public PointF Anchor { get; set; } = new PointF(0, 0);
     public PointF AnchorScreen => new PointF(Position.X + Anchor.X, Position.Y + Anchor.Y);
+    public float Speed { get; set; } = 1;
 
+    private float? lastangle = null;
     public void Update(float angle)
     {
+        if (lastangle.HasValue)
+        {
+            float angleDifference = angle - lastangle.Value;
+
+            // Normaliza a diferença de ângulo para o intervalo [-180, 180] graus
+            if (angleDifference > 180)
+                angleDifference -= 360;
+            else if (angleDifference < -180)
+                angleDifference += 360;
+
+            // Move na direção mais curta
+            angle = lastangle.Value + MathF.Sign(angleDifference) * Math.Min(MathF.Abs(angleDifference), Speed);
+        }
+
+        lastangle = angle;
         float radius = angle * MathF.PI / 180;
         float x = Balance.Anchor.X + Balance.Position.X;
         float y = Balance.Anchor.Y + Balance.Position.Y;
@@ -44,7 +63,7 @@ public class Plate
     public void Draw(Graphics g)
     {
         float r = 15 * Math.Max(Screen.ScaleX, Screen.ScaleY);
-        g.FillEllipse(Position.X + Anchor.X - r, Position.Y + Anchor.Y - r, r*2, r*2, Brushes.White);
+        g.FillEllipse(Position.X + Anchor.X - r, Position.Y + Anchor.Y - r, r * 2, r * 2, Brushes.White);
         Elements.DrawImage(g, this.image, this.Rectangle);
 
         g.DrawRectangle(this.Area, Pens.Blue);
