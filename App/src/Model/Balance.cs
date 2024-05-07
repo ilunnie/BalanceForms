@@ -4,7 +4,7 @@ using System.Linq;
 using BoschForms.Drawing;
 using Screen = BoschForms.Screen.Screen;
 
-public class Balanca
+public class Balance
 {
     public Image Image { get; set; } = Image.FromFile("assets/Base (1).png");
 
@@ -21,7 +21,7 @@ public class Balanca
     public Weight Weight { get; private set; } = Weight.Balanced;
     public int Count => Plates.Sum(plate => plate.Count);
 
-    public Balanca(float x, float y, float width = 200, float height = 200, float distance = 300)
+    public Balance(float x, float y, float width = 200, float height = 200, float distance = 300)
     {
         this.Position = new PointF(x, y);
         this.Size = new SizeF(width, height);

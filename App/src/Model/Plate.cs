@@ -8,7 +8,7 @@ using BoschForms.Screen;
 public class Plate
 {
     public Image image { get; set; } = Image.FromFile("assets/prato.png");
-    public Balanca Balance { get; set; }
+    public Balance Balance { get; set; }
     public List<Object> Objects { get; set; } = new List<Object>();
     public SizeF ObjectsSize { get; set; } = new SizeF(75, 75);
     public bool ClassifyObject { get; set; } = true;
