@@ -19,6 +19,9 @@ public abstract class Object
     public virtual float CenterY => Y + Height / 2;
     public virtual PointF Center => new PointF(CenterX, CenterY);
 
+    public virtual bool Contains(PointF point)
+        => this.Rectangle.Contains(point);
+
     public virtual void Draw(Graphics g)
         => g.DrawImage(Image, Rectangle);
 

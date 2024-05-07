@@ -99,10 +99,10 @@ public static class App
          System.Windows.Forms.Application.Run(form);
     }
 
-    public static void SetPage(IPage page)
+    public static void SetPage(IPage page, bool load = true)
     {
         Page = page;
-        page.Load();
+        if (load) page.Load();
     }
 
     public static void Close() => form.Close();

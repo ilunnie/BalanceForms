@@ -69,7 +69,7 @@ public class Close : Page
         void Voltar(object obj)
         {
             if (this.LastPage is not null)
-                App.SetPage(LastPage);
+                App.SetPage(LastPage, false);
         }
 
         Form close = new Form("close");

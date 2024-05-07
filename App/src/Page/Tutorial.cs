@@ -3,23 +3,32 @@ using BoschForms;
 
 using BoschForms.Screen;
 using BoschForms.Forms;
-public class Tutorial : Page
+public class Tutorial : Game
 {
-    private Balanca Balanca = new Balanca(Screen.CenterX, Screen.CenterY);
     public override void Load()
     {
         App.Background = Color.White;
+
+        Balances.Add(new Balance(Screen.CenterX, Screen.CenterY));
+
+        AddObject(new Circle());
+        AddObject(new Circle());
+        AddObject(new Circle());
+        AddObject(new Circle());
+        AddObject(new Circle());
+        AddObject(new Triangle());
     }
 
     public override void Update()
     {
-        Balanca.ToWeight();
-        Balanca.Update();
+        Balances.ForEach(balance => balance.ToWeight());
+        Balances.ForEach(balance => balance.Update());
     }
 
     public override void Draw(Graphics g)
     {
-        Balanca.Draw(g);
+        Balances.ForEach(balance => balance.Draw(g));
+        Objects.ForEach(obj => obj.Draw(g));
     }
 
     public override void KeyboardDown(object o, System.Windows.Forms.KeyEventArgs e)
@@ -29,4 +38,13 @@ public class Tutorial : Page
         if (e.KeyCode == System.Windows.Forms.Keys.Escape)
             App.SetPage(new Close(this));
     }
+
+    public override void MouseMove()
+        => Cursor.Move();
+
+    public override void MouseDown(System.Windows.Forms.MouseButtons button)
+        => Cursor.Click();
+
+    public override void MouseUp(System.Windows.Forms.MouseButtons button)
+        => Cursor.Drop();
 }
