@@ -10,8 +10,7 @@ using System.Collections.Generic;
 
 public class Tutorial : Page
 {
-    public Dictionary<Object, int> Formas = new();
-
+    private Balanca Balanca = new Balanca(Screen.CenterX, Screen.CenterY);
     public override void Load()
     {
 
@@ -89,11 +88,11 @@ public class Tutorial : Page
         float positionXInput = (width / 2) - 50;
 
         float gap = 170;
-        Formas[new Square(new PointF(positionXInput, height - 2 * gap), 1000)] = 5;
-        Formas[new Circle(new PointF(positionXInput, height - gap), 750)] = 5;
-        Formas[new Triangle(new PointF(positionXInput, height), 500)] = 5;
-        Formas[new Hexagon(new PointF(positionXInput, height + gap), 100)] = 5;
-        Formas[new Star(new PointF(positionXInput, height - 5 + 2 * gap), 200)] = 5; // 110 x 110
+        // Formas[new Square(new PointF(positionXInput, height - 2 * gap), 1000)] = 5;
+        // Formas[new Circle(new PointF(positionXInput, height - gap), 750)] = 5;
+        // Formas[new Triangle(new PointF(positionXInput, height), 500)] = 5;
+        // Formas[new Hexagon(new PointF(positionXInput, height + gap), 100)] = 5;
+        // Formas[new Star(new PointF(positionXInput, height - 5 + 2 * gap), 200)] = 5; // 110 x 110
     }
 
     private void GeneratePesarButton()
