@@ -28,6 +28,6 @@ wrong.border = Border(left = default_side, top = default_side, right = default_s
 wrong.alignment = Alignment(horizontal = 'center', vertical = 'center', shrink_to_fit = False)
 
 null = NamedStyle(name = 'null')
-null.fill = PatternFill(start_color = Color(rgb = '00BBBBBB'), fill_type = 'solid')
+null.fill = PatternFill(start_color = Color(rgb = '00C0C0C0'), fill_type = 'solid')
 null.border = Border(left = default_side, top = default_side, right = default_side, bottom = default_side)
 null.alignment = Alignment(horizontal = 'center', vertical = 'center', shrink_to_fit = False)

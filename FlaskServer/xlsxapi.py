@@ -57,8 +57,8 @@ def create_workbook():
 
 def save_user_data(user_data):
     tests = [list(user_data['prova1'].values()), list(user_data['prova2'].values())]
-    tests[0][3] = time_formatter(tests[0][2])
-    tests[1][3] = time_formatter(tests[1][2])
+    tests[0][2] = time_formatter(tests[0][2])
+    tests[1][2] = time_formatter(tests[1][2])
 
     today = get_today_info()
     date = today['date']
