@@ -8,7 +8,7 @@ using BoschForms.Drawing;
 using System.Reflection;
 using System.Linq;
 
-public class Tutorial : Game
+public class Level2 : Game
 {
     public static int Attempts { get; private set; } = 0;
     public static List<(int template, int response)> Weights { get; private set; }
@@ -24,8 +24,7 @@ public class Tutorial : Game
         App.Background = Color.White;
 
         //! 🆄🆂🅴🅵🆄🅻 🆂🅴🆃🆃🅸🅽🅶🆂
-        #region //! ■■■■■■■■■■■■■■■■■■■■■■■
-        PointF center = Screen.Center;
+#region //! ■■■■■■■■■■■■■■■■■■■■■■■
         float width = Screen.Width;
         float height = Screen.Height;
         float RPwidth = width * .16f;
@@ -33,16 +32,11 @@ public class Tutorial : Game
         float LPwidth = RPwidth / 2;
         LeftPanel = new RectangleF(0, 0, LPwidth, height);
         BetweenLabels = new RectangleF(LeftPanel.Right, 0, RightPanel.Left - LPwidth, height);
-        float modalwidth = 500;
-        float modalheight = 250;
-        float x = center.X - modalwidth / 2;
-        float y = center.Y - modalheight / 2;
-        ModalRect = new RectangleF(x, y, modalwidth, modalheight);
         //! ■■■■■■■■■■■■■■■■■■■■■■■
         #endregion
 
-        Type[] shapes = { typeof(Circle), typeof(Square), typeof(Triangle) };
-        int[] weights = { 300, 200, 100 };
+        Type[] shapes = { typeof(Circle), typeof(Hexagon), typeof(Square), typeof(Star), typeof(Triangle) };
+        int[] weights = { 600, 675, 500, 50, 25 };
         GenerateRightPanel(shapes, weights);
         GenerateShapes(shapes, weights);
         GenerateGame();
@@ -97,7 +91,7 @@ public class Tutorial : Game
             int count = type.Value.Count;
             Object obj = type.Value[0];
             bool inCursor = Cursor.Object is not null && obj.GetType() == Cursor.Object.GetType();
-            string quant = (count - (inCursor ? 1 : 0)).ToString();
+            string quant = (count - (inCursor ? 1:0)).ToString();
 
             Font font = new Font("Arial", 15);
             if (quant != "0") g.DrawString(obj.Rectangle, quant, font, Brushes.White, alignment: StringAlignment.Center);
@@ -116,9 +110,6 @@ public class Tutorial : Game
         if (e.KeyCode == System.Windows.Forms.Keys.Escape)
             if (Client.Mode == "debug") App.Close();
             else App.SetPage(new Close(this));
-
-        if (ModalOn) Modal.OnKeyDown(o, e);
-
         if ((e.Modifiers & System.Windows.Forms.Keys.Alt) == System.Windows.Forms.Keys.Alt && e.KeyCode == System.Windows.Forms.Keys.F4)
         {
             e.Handled = true;
@@ -126,20 +117,6 @@ public class Tutorial : Game
         }
     }
 
-    public override void KeyboardUp(object o, System.Windows.Forms.KeyEventArgs e)
-    {
-        if (ModalOn) Modal.OnKeyUp(o, e);
-    }
-
-    public override void MouseDown(System.Windows.Forms.MouseButtons button)
-    {
-        if (ModalOn) Modal.OnMouseDown(button);
-    }
-
-    public override void MouseUp(System.Windows.Forms.MouseButtons button)
-    {
-        if (ModalOn) Modal.OnMouseUp(button);
-    }
 
     private void GenerateRightPanel(Type[] shapes, int[] weights, int y = 200, int gap = 120, int? correct_index = null)
     {
@@ -254,8 +231,9 @@ public class Tutorial : Game
     {
         RectangleF area = BetweenLabels;
 
-        float widthpercent = area.Width * .5f - width / 2;
-        Balances.Add(new Balance(area.Left + widthpercent, y, distance: 300));
+        float widthpercent = area.Width * .25f - width / 2;
+        Balances.Add(new Balance(area.Left + widthpercent, y));
+        Balances.Add(new Balance(area.Right - widthpercent - width, y));
 
         void Submit(object obj)
         {

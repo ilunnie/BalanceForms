@@ -148,7 +148,7 @@ public class Level1 : Game
             }
 
             List<string> weightStrings = Weights.Select(w => $"({w.template}, {w.response})").ToList();
-            System.Windows.Forms.MessageBox.Show(string.Join(Environment.NewLine, weightStrings));
+            ModalOn = true;
         }
 
         RectangleF panel = RightPanel;
