@@ -1,21 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='css/style.css') }}">
     <title>Document</title>
 </head>
+<script type="text/javascript">
+    var default_values = {{ default_values }}
+</script>
 <body>
     <header class="values-header">
-        <img src="{{ url_for('static',filename='img/nav-colors.png') }}" class="nav-colors"/>
+        <img src="{{ url_for('static',filename='img/nav-colors.png') }}" class="nav-colors" />
         <nav>
-            <img src="{{ url_for('static',filename='img/logo-bosch.png') }}" class="logo"/>
+            <img src="{{ url_for('static',filename='img/logo-bosch.png') }}" class="logo" />
             <form action="/" method="get">
                 <button class="nav-button" type="submit">Iniciar prova</button>
             </form>
         </nav>
     </header>
+    <modal id="modal">
+        <main>
+            <h1>Deseja mesmo utilizar esses valores?</h1>
+            <hr>
+            <div class="format-modal">
+                <div>
+                    <h2>Prova 1</h2>
+                    <div class="text" id="choose1"></div>
+                    <div class="text" id="choose2"></div>
+                    <div class="text" id="choose3"></div>
+                    <div class="text" id="choose4"></div>
+                    <div class="text" id="choose5"></div>
+                </div>
+                <div>
+                    <h2>Prova 2</h2>
+                    <div class="text" id="choose6"></div>
+                    <div class="text" id="choose7"></div>
+                    <div class="text" id="choose8"></div>
+                    <div class="text" id="choose9"></div>
+                    <div class="text" id="choose10"></div>
+                </div>
+            </div>
+            <hr>
+            <div class="align-buttons">
+                <button>Cancelar</button>
+                <button class="send-button">Enviar valores</button>
+            </div>
+        </main>
+    </modal>
     <main class="values-main">
         <form id="form" action="/change_values" method="post">
             <h1>Defina os valores</h1>
@@ -46,10 +79,10 @@
                 <input type="number" name="value10" id="value10" placeholder="Digite um valor..." autocomplete="off">
             </div>
             <button class="default-button" type="button" id="next" onclick="nextValues()">Próxima</button>
-            <button class="default-button" type="button" id="change" onclick="confirmValues()">Alterar</button>
+            <button class="default-button" type="button" id="change" onclick="openModal()">Alterar</button>
             <script src="{{ url_for('static', filename='js/changevalues.js')}}"></script>
         </form>
     </main>
 </body>
-</html>
 
+</html>
