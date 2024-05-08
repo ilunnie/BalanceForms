@@ -6,12 +6,16 @@
     font-family: "Noto Sans", sans-serif;
 }
 
+html {
+    overflow: hidden;
+}
+
 body {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: rgb(247, 247, 247)
+    background-color: rgb(247, 247, 247);
 }
 
 header {
@@ -70,6 +74,86 @@ input {
 
 input:focus {
     outline: 0;
+}
+
+#modal {
+    display: none;
+    background-color: rgba(0, 0, 0, 0.281);
+    width: 100%;
+    height: 110%;
+    position: absolute;
+    justify-content: center;
+    align-items: center;
+}
+
+#modal main {
+    background-color: white;
+    width: 60%;
+    padding: 20px 20px 0 20px;
+    border-radius: 20px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+#modal main h1 {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 45px;
+}
+
+.format-modal {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin: 10px 0 10px 0;
+}
+
+.text {
+    text-align: center;
+    font-size: 30px;
+}
+
+.align-buttons {
+    display: flex;
+    justify-content: end;
+}
+
+.align-buttons button {
+    width: 10em;
+    font-weight: 500;
+    border: 1px solid rgb(180, 180, 180);
+    border-radius: 10px;
+    font-size: 15px;
+    margin: 10px;
+    padding: 10px;
+}
+
+.align-buttons button:hover {
+    cursor: pointer;
+    background-color: lightgray;
+}
+
+.align-buttons .send-button {
+    color: white;
+    background-color: #007bc0;
+}
+
+.align-buttons .send-button:hover {
+    background-color: #00629a;
+}
+
+.return_button {
+    border: 0;
+    background-color: transparent;
+    width: 3em;
+    margin-right: 10px;
+}
+
+.return_button:hover {
+    cursor: pointer;
+}
+
+.return_button img {
+    width: 100%;
 }
 
 .values-header {
@@ -173,6 +257,10 @@ input:focus {
         width: 80%;
     }
 
+    #modal main {
+        width: 80%;
+    }
+    
     .values-header {
         margin-bottom: 10%;
     }
@@ -183,9 +271,17 @@ input:focus {
 }
 
 @media screen and (max-width: 460px) {
+    html {
+        overflow: auto;
+    }
+
     main {
         background-color: transparent;
         box-shadow: none;
+        width: 90%;
+    }
+
+    #modal main {
         width: 90%;
     }
 
