@@ -54,8 +54,8 @@ def values():
     values = {'prova1': [], 'prova2': []}
     with open("values.txt", "r") as file:
         tests_values = file.read().splitlines()
-        values['prova1'] = tests_values[0].split(', ')
-        values['prova2'] = tests_values[1].split(', ')
+        values['prova1'] = [int(number) for number in (tests_values[0].split(','))]
+        values['prova2'] = [int(number) for number in (tests_values[1].split(','))]
     return values, 200
 
 @bp.route('/timer', methods=['GET', 'POST'])
