@@ -50,6 +50,8 @@ def change_values():
 
 @bp.route('/values', methods=['GET'])
 def values():
+    global test_started
+    test_started = 0
     values = {'prova1': [], 'prova2': []}
     with open("values.txt", "r") as file:
         tests_values = file.read().splitlines()
