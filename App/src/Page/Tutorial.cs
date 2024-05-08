@@ -1,194 +1,222 @@
-using System.Drawing;
-// using System.Windows.Forms;
-using BoschForms;
-using BoschForms.Drawing;
-
-using BoschForms.Screen;
-using BoschForms.Forms;
-using System.Security.Cryptography;
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
+using System.Drawing;
+using BoschForms;
+using BoschForms.Forms;
+using BoschForms.Screen;
+using BoschForms.Drawing;
+using System.Reflection;
+using System.Linq;
 
 public class Tutorial : Game
 {
+    public static int Attempts { get; private set; } = 0;
+    public static List<(int template, int response)> Weights { get; private set; }
+    private RectangleF RightPanel;
+    private RectangleF LeftPanel;
+    private RectangleF BetweenLabels;
+    private List<(Bitmap image, RectangleF rect)> labels;
+    private bool ModalOn = false;
+    private RectangleF ModalRect;
+    private Form Modal;
     public override void Load()
     {
+        App.Background = Color.White;
 
-        var center = Screen.Center;
-        float textInputWidth = Screen.Width * .15f;
-        float textInputHeight = 50;
-        float width = Screen.Width * .2f;
-        float x = Screen.Width - width + 80;
-        float y = 200;
-        float buttonWidth = 200;
-        float buttonHeight = 80;
-        float positionXButton = Screen.Width - width + (Screen.Width * .2f) / 2 - (buttonWidth / 2);
-        float positionXInput =
-            Screen.Width - width + (Screen.Width * .2f) / 2 - (textInputWidth / 2);
+        //! 🆄🆂🅴🅵🆄🅻 🆂🅴🆃🆃🅸🅽🅶🆂
+        #region //! ■■■■■■■■■■■■■■■■■■■■■■■
+        PointF center = Screen.Center;
+        float width = Screen.Width;
+        float height = Screen.Height;
+        float RPwidth = width * .16f;
+        RightPanel = new RectangleF(width - RPwidth, 0, RPwidth, height);
+        float LPwidth = RPwidth / 2;
+        LeftPanel = new RectangleF(0, 0, LPwidth, height);
+        BetweenLabels = new RectangleF(LeftPanel.Right, 0, RightPanel.Left - LPwidth, height);
+        float modalwidth = 500;
+        float modalheight = 250;
+        float x = center.X - modalwidth / 2;
+        float y = center.Y - modalheight / 2;
+        ModalRect = new RectangleF(x, y, modalwidth, modalheight);
+        //! ■■■■■■■■■■■■■■■■■■■■■■■
+        #endregion
 
-        GenerateLeftPanel();
-        GeneratePesarButton();
-        GenerateRightPanel();
+        Type[] shapes = { typeof(Circle), typeof(Square), typeof(Triangle) };
+        int[] weights = { 300, 200, 100 };
+        GenerateRightPanel(shapes, weights);
+        GenerateShapes(shapes, weights);
+        GenerateGame();
 
-        Balances.Add(new Balance(
-                (Screen.Width / 2) -  75, (Screen.Height / 2) - 75
-            )
-        );
+        GenerateConfirmModal();
     }
 
-    public override void Update() { }
+    public override void Update()
+    {
+        RectangleF panel = LeftPanel;
+        Dictionary<Type, List<Object>> objects = this.DictObjects;
+        float gap = panel.Height / (objects.Count + 1);
+
+        float line = gap;
+        foreach (var type in objects)
+        {
+            foreach (var obj in type.Value)
+            {
+                if (obj == Cursor.Object) continue;
+                float x = panel.Left + panel.Width / 2 - obj.Width / 2;
+                float y = line - obj.Height / 2;
+
+                obj.Position = new PointF(x, y);
+            }
+            line += gap;
+        }
+        Balances.ForEach(balance => balance.Update());
+
+        this.FormsOn = !ModalOn;
+        this.CursorOn = !ModalOn;
+    }
 
     public override void Draw(Graphics g)
     {
-        float width = Screen.Width * 0.16f;
-        float height = Screen.Height;
-        float x = Screen.Width - width;
-        float y = 0;
-        string titutlo = "Bem vindo ao Tutorial!";
-        string enunciado =
-            "Aqui você vai aprender como funciona esse desafio das balanças. Quero que você arraste os blocos para a balança e tente descobrir o pesos dessas peças";
+        SolidBrush shadow = new SolidBrush(Color.FromArgb(100, 100, 100));
+        SolidBrush panel = new SolidBrush(Color.FromArgb(239, 241, 242));
 
-        // Left Panel
-        #region
-        RectangleF shadowL = new RectangleF(3, 0, width / 2, height);
-        SolidBrush shadowLbrush = new SolidBrush(Color.FromArgb(100, 100, 100));
-        g.FillRectangle(shadowL, (0, 30, 30, 0), shadowLbrush);
+        RectangleF panelL = LeftPanel;
+        g.FillRectangle(new RectangleF(3, 0, panelL.Width, panelL.Height), (0, 30, 30, 0), shadow);
+        g.FillRectangle(panelL, (0, 30, 30, 0), panel);
 
-        RectangleF backgroundL = new RectangleF(0, y, width / 2, height);
-        SolidBrush backbrushL = new SolidBrush(Color.FromArgb(239, 241, 242));
-        g.FillRectangle(backgroundL, (0, 30, 30, 0), backbrushL);
-        #endregion
+        RectangleF panelR = RightPanel;
+        g.FillRectangle(new RectangleF(panelR.X - 3, 0, panelR.Width, panelR.Height), (0, 30, 30, 0), shadow);
+        g.FillRectangle(panelR, (0, 30, 30, 0), panel);
 
-        // Right Panel
-        #region
-        RectangleF shadowR = new RectangleF(x * 0.998f, y * -1.01f, width, height);
-        SolidBrush shadowRbrush = new SolidBrush(Color.FromArgb(100, 100, 100));
-        g.FillRectangle(shadowR, (30, 0, 0, 30), shadowRbrush);
+        foreach (var (image, rect) in labels)
+            Elements.DrawImage(g, image, rect);
 
-        RectangleF backgroundR = new RectangleF(x, y, width, height);
-        SolidBrush backbrushR = new SolidBrush(Color.FromArgb(239, 241, 242));
-        g.FillRectangle(backgroundR, (30, 0, 0, 30), backbrushR);
-        #endregion
-        
-        DrawForm(g, x, width);
+        Objects.ForEach(obj => obj.Draw(g));
+        foreach (var type in DictObjects)
+        {
+            int count = type.Value.Count;
+            Object obj = type.Value[0];
+            bool inCursor = Cursor.Object is not null && obj.GetType() == Cursor.Object.GetType();
+            string quant = (count - (inCursor ? 1 : 0)).ToString();
+
+            Font font = new Font("Arial", 15);
+            if (quant != "0") g.DrawString(obj.Rectangle, quant, font, Brushes.White, alignment: StringAlignment.Center);
+        }
+
+        shadow.Dispose();
+        panel.Dispose();
+
         Balances.ForEach(balance => balance.Draw(g));
-       
-        shadowRbrush.Dispose();
-        backbrushR.Dispose();
+        Forms.ForEach(form => form.Draw(g));
+        if (ModalOn) DrawModal(g);
     }
 
     public override void KeyboardDown(object o, System.Windows.Forms.KeyEventArgs e)
     {
         if (e.KeyCode == System.Windows.Forms.Keys.Escape)
-            App.Close();
+            if (Client.Mode == "debug") App.Close();
+            else App.SetPage(new Close(this));
 
-        if (e.KeyCode == System.Windows.Forms.Keys.Escape)
-            App.SetPage(new Close(this));
+        if (ModalOn) Modal.OnKeyDown(o, e);
     }
 
-    private void GenerateLeftPanel()
+    public override void KeyboardUp(object o, System.Windows.Forms.KeyEventArgs e)
     {
-        float width = Screen.Width * .08f;
-        float height = (Screen.Height / 2) - 50;
+        if (ModalOn) Modal.OnKeyUp(o, e);
+    }
 
-        float positionXInput = (width / 2) - 50;
+    public override void MouseDown(System.Windows.Forms.MouseButtons button)
+    {
+        if (ModalOn) Modal.OnMouseDown(button);
+    }
 
-        float gap = 170;
-        for (int i = 0; i < 5; i++)
+    public override void MouseUp(System.Windows.Forms.MouseButtons button)
+    {
+        if (ModalOn) Modal.OnMouseUp(button);
+    }
+
+    private void GenerateRightPanel(Type[] shapes, int[] weights, int y = 200, int gap = 120, int? correct_index = null)
+    {
+        //? Index do valor default
+        int index;
+        if (correct_index is null)
         {
-            AddObject(new Square(new PointF(positionXInput, height - 2 * gap), 1000));
-            AddObject(new Circle(new PointF(positionXInput, height - gap), 750));
-            AddObject(new Triangle(new PointF(positionXInput, height), 500));
-            AddObject(new Hexagon(new PointF(positionXInput, height + gap), 100));
-            AddObject(new Star(new PointF(positionXInput, height - 5 + 2 * gap), 200)); // 110x110
+            int[] arr = (int[])weights.Clone();
+            Array.Sort(arr);
+
+            int value = arr[arr.Length / 2];
+            index = Array.IndexOf(weights, value);
         }
-    }
+        else index = correct_index.Value;
 
-    private void GeneratePesarButton()
-    {
-        float width = Screen.Width * .2f;
-        float x = Screen.Width - width + 80;
-        float textInputWidth = Screen.Width * .15f;
-
-        void SubmitPesar(object obj)
-            => Balances.ForEach(balance => balance.ToWeight());
-
-        float buttonWidth = 200;
-        float buttonHeight = 80;
-        float positionXButton = Screen.Width - width + (Screen.Width * .2f) / 2 - (buttonWidth / 2);
-        float positionXInput =
-            Screen.Width - width + (Screen.Width * .2f) / 2 - (textInputWidth / 2);
-
-        positionXButton = Screen.Width / 2 - buttonWidth;
-        Form botao = new Form("botao");
-        botao.Append(
-            new Button(positionXButton, Screen.Height * 0.82f)
-            {
-                Name = "Submit",
-                Label = "Pesar",
-                Size = new SizeF(buttonWidth, buttonHeight),
-                Style =
-                {
-                    BackgroundColor = Color.FromArgb(0, 123, 192),
-                    Color = Color.White,
-                    BorderRadius = 10,
-                    BorderColor = Color.Black,
-                    BorderWidth = 2,
-                },
-                OnChange = SubmitPesar,
-            }
-        );
-
-        Forms.Add(botao);
-    }
-
-    private void GenerateRightPanel()
-    {
-        var center = Screen.Center;
-        float textInputWidth = Screen.Width * .08f;
-        float textInputHeight = 45;
-        float width = Screen.Width * .14f;
-        float x = Screen.Width - width + 80;
-        float y = 200;
-        float buttonWidth = 200;
-        float buttonHeight = 80;
-        float positionXButton = Screen.Width - width + (width * 0.875f) / 2 - (buttonWidth / 2);
-        float positionXInput = Screen.Width - width + (width) / 2 - (textInputWidth / 2);
-
-        void SubmitRespostas(object obj)
+        void Submit(object obj)
         {
             Form form = (Form)obj;
             var body = form.Body;
-            bool succes = true;
+
+            Weights = new List<(int template, int response)>();
+            for (int i = 0; i < weights.Length; i++)
+            {
+                int response;
+                if (!int.TryParse(body[$"input_{i}"].Value.ToString(), out response))
+                    response = 0;
+
+                Weights.Add((weights[i], response));
+            }
+
+            List<string> weightStrings = Weights.Select(w => $"({w.template}, {w.response})").ToList();
+            ModalOn = true;
+            // System.Windows.Forms.MessageBox.Show(string.Join(Environment.NewLine, weightStrings));
         }
 
-        Form painel = new Form("Painel");
+        RectangleF panel = RightPanel;
+        float width = panel.Width * .5f;
+        float height = 45;
+        float x = panel.X + panel.Width * .6f - width / 2;
+        float labelsize = height;
+        float labelx = panel.X + panel.Width * .2f - labelsize / 2;
 
-        for (int i = 0; i < 5; i++)
+        Form form = new Form("Repostas");
+
+        labels = new();
+        for (int i = 0; i < shapes.Length; i++)
         {
-            painel.Append(
-                new TextInput(positionXInput, y + i * 120, "input" + i.ToString(), "")
-                {
-                    Size = new SizeF(textInputWidth, textInputHeight),
-                    Style =
+            ConstructorInfo constructor = shapes[i].GetConstructor(new Type[] { typeof(int) });
+            Object shape = (Object)constructor.Invoke(new object[] { weights[i] });
+            Bitmap label = (Bitmap)shape.Image;
+
+            IInput input = new TextInput(x, y + (i * gap), $"input_{i}")
+            {
+                Value = i == index ? weights[i] : "",
+                Size = new SizeF(width, height),
+                isDisabled = i == index,
+                Style =
                     {
                         BackgroundColor = Color.White,
                         Color = Color.Black,
                         BorderRadius = 10,
                         BorderColor = Color.Black,
-                        BorderWidth = 2,
+                        BorderWidth = 2
                     }
-                }
-            );
+            };
+
+            RectangleF rect = new RectangleF(labelx, y + (i * gap), labelsize, labelsize);
+
+            form.Append(input);
+            labels.Add((label, rect));
         }
 
-        painel.Append(
-            new Button(positionXButton, Screen.Height * 0.82f)
+        width = 200;
+        height = 80;
+        x = panel.X + panel.Width / 2 - width / 2;
+
+        form.Append(
+            new Button(x, Screen.Height * .82f)
             {
                 Name = "Submit",
-                Value = painel,
+                Value = form,
                 Label = "Responder",
-                Size = new SizeF(buttonWidth, buttonHeight),
+                Size = new SizeF(width, height),
                 Style =
                 {
                     BackgroundColor = Color.FromArgb(0, 123, 192),
@@ -197,62 +225,131 @@ public class Tutorial : Game
                     BorderColor = Color.Black,
                     BorderWidth = 2
                 },
-                OnChange = SubmitRespostas,
+                OnChange = Submit,
             }
         );
 
-        Forms.Add(painel);
+        Forms.Add(form);
     }
 
-    private void DrawForm(Graphics g, float x, float width)
+    private void GenerateShapes(Type[] shapes, int[] weights, int[] quant = null)
     {
-        float shapeWidth = Screen.Width * 0.16f;
-        float shapeHeight = 40;
-        float shapeY = 200;
-        float textInputWidth = Screen.Width * .08f;
-        float positionXInput = Screen.Width - shapeWidth + (shapeWidth) / 3 - (textInputWidth / 2);
+        if (quant is null)
+            quant = new int[] { 5, 5, 5, 5, 5 };
 
-        Font label = new Font("Arial", 15);
-        SolidBrush labelbrush = new SolidBrush(Color.Black);
-
-        StringFormat format = new StringFormat()
+        for (int i = 0; i < shapes.Length; i++)
         {
-            Alignment = StringAlignment.Center,
-            LineAlignment = StringAlignment.Center
-        };
-        g.DrawString(
-            "Respostas",
-            new RectangleF(x, 0, width, Screen.Height * 0.18f),
-            label,
-            labelbrush,
-            format
-        );
+            ConstructorInfo constructor = shapes[i].GetConstructor(new Type[] { typeof(int) });
+            foreach (var _ in quant)
+                AddObject((Object)constructor.Invoke(new object[] { weights[i] }));
+        }
+    }
 
-        // Playable Shapes
-        // TODO: Make the number of pieces appear
-        Dictionary<Type, List<Object>> PlayShapes = this.DictObjects;
+    private void GenerateGame(int y = 700, int width = 150)
+    {
+        RectangleF area = BetweenLabels;
 
-        this.Objects.ForEach(obj => obj.Draw(g));
+        float widthpercent = area.Width * .5f - width / 2;
+        Balances.Add(new Balance(area.Left + widthpercent, y, distance: 300));
 
-        // Display Shapes
-        Object[] shapes =
+        void Submit(object obj)
         {
-            new Square(new PointF(positionXInput, shapeHeight)),
-            new Circle(new PointF(positionXInput, shapeHeight)),
-            new Triangle(new PointF(positionXInput, shapeHeight)),
-            new Hexagon(new PointF(positionXInput, shapeHeight)),
-            new Star(new PointF(positionXInput, shapeHeight)),
-        };
-
-        for (int i = 0; i < 5; i++)
-        {
-            g.DrawImage(
-                new Bitmap(shapes[i].Image),
-                new PointF(shapes[i].Position.X, shapeY + i * 120 ),
-                new SizeF(45, 45)
-            );
+            Balances.ForEach(balance => balance.ToWeight());
+            Attempts++;
         }
 
-        Forms.ForEach(form => form.Draw(g));
+        float bwidth = 200;
+        float bheight = 80;
+        float bx = area.Left + area.Width / 2 - bwidth / 2;
+        float by = area.Height * .8f;
+
+        Form form = new Form("toWeight");
+
+        form.Append(
+            new Button(bx, by)
+            {
+                Label = "Pesar",
+                Size = new SizeF(bwidth, bheight),
+                Style =
+                {
+                    BackgroundColor = Color.FromArgb(0, 123, 192),
+                    Color = Color.White,
+                    BorderRadius = 10,
+                    BorderColor = Color.Black,
+                    BorderWidth = 2,
+                },
+                OnChange = Submit,
+            }
+        );
+
+        Forms.Add(form);
+    }
+
+    private void GenerateConfirmModal()
+    {
+        RectangleF modal = ModalRect;
+        Form form = new Form("Confirm");
+
+        void cancel(object obj) => ModalOn = false;
+        void submit(object obj)
+        {
+            //ToDo Move to the next level
+        }
+
+        float width = 150;
+        float height = 75;
+        float y = modal.Y + modal.Height * .6f;
+        form.Add = new List<IInput>() {
+            new Button(modal.X + modal.Width * .25f - width / 2, y)
+            {
+                Label = "Cancelar",
+                Size = new SizeF(width, height),
+                Style = {
+                    BackgroundColor = Color.FromArgb(0,123,192),
+                    Color = Color.White,
+                    BorderRadius = 15,
+                    BorderColor = Color.Black,
+                    BorderWidth = 2
+                },
+                OnChange = cancel
+            },
+            new Button(modal.X + modal.Width * .75f - width / 2, y)
+            {
+                Label = "Enviar",
+                Size = new SizeF(width, height),
+                Style = {
+                    BackgroundColor = Color.FromArgb(0,123,192),
+                    Color = Color.White,
+                    BorderRadius = 15,
+                    BorderColor = Color.Black,
+                    BorderWidth = 2
+                },
+                OnChange = submit
+            },
+        };
+
+        this.Modal = form;
+    }
+
+    private void DrawModal(Graphics g)
+    {
+        RectangleF screen = new RectangleF(0, 0, Screen.Width, Screen.Height);
+        SolidBrush background = new SolidBrush(Color.FromArgb(150, 0, 0, 0));
+        g.FillRectangle(screen, background);
+
+        SolidBrush shadow = new SolidBrush(Color.Black);
+        SolidBrush color = new SolidBrush(Color.White);
+        g.FillRectangle(new RectangleF(ModalRect.X + 5, ModalRect.Y + 5, ModalRect.Width, ModalRect.Height), 25, shadow);
+        g.FillRectangle(ModalRect, 25, color);
+
+        RectangleF text = new RectangleF(ModalRect.X, ModalRect.Y, ModalRect.Width, ModalRect.Height * .6f);
+        Font font = new Font("Arial", 20);
+        g.DrawString(text, "Deseja mesmo enviar?", font, Brushes.Black, alignment: StringAlignment.Center);
+
+        shadow.Dispose();
+        color.Dispose();
+        background.Dispose();
+
+        Modal.Draw(g);
     }
 }

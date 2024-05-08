@@ -68,7 +68,7 @@ public class Plate
 
         DrawShapes(g);
 
-        g.DrawRectangle(this.Area, this.Area.Contains(BoschForms.Client.Cursor) ? Pens.Red : Pens.Blue);
+        // g.DrawRectangle(this.Area, this.Area.Contains(BoschForms.Client.Cursor) ? Pens.Red : Pens.Blue);
     }
 
     private void DrawShapes(Graphics g)

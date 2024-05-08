@@ -41,6 +41,23 @@ public class Level1 : Game
 
     public override void Update()
     {
+        RectangleF panel = LeftPanel;
+        Dictionary<Type, List<Object>> objects = this.DictObjects;
+        float gap = panel.Height / (objects.Count + 1);
+
+        float line = gap;
+        foreach (var type in objects)
+        {
+            foreach (var obj in type.Value)
+            {
+                if (obj == Cursor.Object) continue;
+                float x = panel.Left + panel.Width / 2 - obj.Width / 2;
+                float y = line - obj.Height / 2;
+
+                obj.Position = new PointF(x, y);
+            }
+            line += gap;
+        }
         Balances.ForEach(balance => balance.Update());
     }
 
@@ -60,12 +77,23 @@ public class Level1 : Game
         foreach (var (image, rect) in labels)
             Elements.DrawImage(g, image, rect);
 
+        Objects.ForEach(obj => obj.Draw(g));
+        foreach (var type in DictObjects)
+        {
+            int count = type.Value.Count;
+            Object obj = type.Value[0];
+            bool inCursor = Cursor.Object is not null && obj.GetType() == Cursor.Object.GetType();
+            string quant = (count - (inCursor ? 1:0)).ToString();
+
+            Font font = new Font("Arial", 15);
+            if (quant != "0") g.DrawString(obj.Rectangle, quant, font, Brushes.White, alignment: StringAlignment.Center);
+        }
+
         shadow.Dispose();
         panel.Dispose();
 
         Balances.ForEach(balance => balance.Draw(g));
         Forms.ForEach(form => form.Draw(g));
-        Objects.ForEach(obj => obj.Draw(g));
     }
 
     public override void KeyboardDown(object o, System.Windows.Forms.KeyEventArgs e)

@@ -25,7 +25,7 @@ public class Balance
     {
         this.Position = new PointF(x, y);
         this.Size = new SizeF(width, height);
-        this.Anchor = new PointF(width * .5f, height * .27f);
+        this.Anchor = new PointF(width * .498f, height * .17f);
         this.Distance = distance;
 
         this.Plates = new Plate[] { new Plate(), new Plate() };
@@ -36,7 +36,7 @@ public class Balance
         this.Left.Size = plateSize;
         this.Right.Size = plateSize;
 
-        PointF platePoint = new PointF(plateSize.Width * .5f, plateSize.Height * .77f);
+        PointF platePoint = new PointF(plateSize.Width * .505f, plateSize.Height * .79f);
         this.Left.Anchor = platePoint;
         this.Right.Anchor = platePoint;
 

@@ -10,6 +10,8 @@ public abstract class Game : Page
     public Dictionary<Type, List<Object>> DictObjects => _objects;
     public List<Object> Objects => GetObjects();
 
+    public bool CursorOn = true;
+
     public Game AddObject(Object _object)
     {
         if (_objects.ContainsKey(_object.GetType()))
@@ -33,19 +35,19 @@ public abstract class Game : Page
 
     public override void OnMouseMove()
     {
-        Cursor.Move();
+        if (CursorOn) Cursor.Move();
         base.OnMouseMove();
     }
 
     public override void OnMouseDown(MouseButtons button)
     {
-        if(button == MouseButtons.Left) Cursor.Click();
+        if(CursorOn && button == MouseButtons.Left) Cursor.Click();
         base.OnMouseDown(button);
     }
 
     public override void OnMouseUp(MouseButtons button)
     {
-        if(button == MouseButtons.Left) Cursor.Drop();
+        if(CursorOn && button == MouseButtons.Left) Cursor.Drop();
         base.OnMouseUp(button);
     }
 }
