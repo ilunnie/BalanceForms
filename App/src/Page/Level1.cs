@@ -5,6 +5,8 @@ using BoschForms;
 using BoschForms.Forms;
 using BoschForms.Screen;
 using BoschForms.Drawing;
+using System.Reflection;
+using System.Linq;
 
 public class Level1 : Game
 {
@@ -13,12 +15,13 @@ public class Level1 : Game
     private RectangleF RightPanel;
     private RectangleF LeftPanel;
     private RectangleF BetweenLabels;
+    private List<(Bitmap image, RectangleF rect)> labels;
     public override void Load()
     {
         App.Background = Color.White;
 
         //! 🆄🆂🅴🅵🆄🅻 🆂🅴🆃🆃🅸🅽🅶🆂
-        #region //! ■■■■■■■■■■■■■■■■■■■■■■■
+#region //! ■■■■■■■■■■■■■■■■■■■■■■■
         float width = Screen.Width;
         float height = Screen.Height;
         float RPwidth = width * .16f;
@@ -29,9 +32,10 @@ public class Level1 : Game
         //! ■■■■■■■■■■■■■■■■■■■■■■■
         #endregion
 
-        int[] weights = {750, 1000, 500, 200, 100};
-        GenerateRightPanel(weights);
-        GenerateShapes(weights);
+        Type[] shapes = { typeof(Circle), typeof(Hexagon), typeof(Square), typeof(Star), typeof(Triangle) };
+        int[] weights = { 750, 1000, 500, 200, 100 };
+        GenerateRightPanel(shapes, weights);
+        GenerateShapes(shapes, weights);
         GenerateGame();
     }
 
@@ -44,7 +48,7 @@ public class Level1 : Game
     {
         SolidBrush shadow = new SolidBrush(Color.FromArgb(100, 100, 100));
         SolidBrush panel = new SolidBrush(Color.FromArgb(239, 241, 242));
-        
+
         RectangleF panelL = LeftPanel;
         g.FillRectangle(new RectangleF(3, 0, panelL.Width, panelL.Height), (0, 30, 30, 0), shadow);
         g.FillRectangle(panelL, (0, 30, 30, 0), panel);
@@ -53,8 +57,12 @@ public class Level1 : Game
         g.FillRectangle(new RectangleF(panelR.X - 3, 0, panelR.Width, panelR.Height), (0, 30, 30, 0), shadow);
         g.FillRectangle(panelR, (0, 30, 30, 0), panel);
 
+        foreach (var (image, rect) in labels)
+            Elements.DrawImage(g, image, rect);
+
         shadow.Dispose();
-        
+        panel.Dispose();
+
         Balances.ForEach(balance => balance.Draw(g));
         Forms.ForEach(form => form.Draw(g));
         Objects.ForEach(obj => obj.Draw(g));
@@ -64,10 +72,10 @@ public class Level1 : Game
     {
         if (e.KeyCode == System.Windows.Forms.Keys.Escape)
             if (Client.Mode == "debug") App.Close();
-            else App.SetPage(new Close(this), false);
+            else App.SetPage(new Close(this));
     }
 
-    private void GenerateRightPanel(int[] weights, int y = 200, int gap = 120, int? correct_index = null)
+    private void GenerateRightPanel(Type[] shapes, int[] weights, int y = 200, int gap = 120, int? correct_index = null)
     {
         //? Index do valor default
         int index;
@@ -95,23 +103,33 @@ public class Level1 : Game
 
                 Weights.Add((weights[i], response));
             }
+
+            List<string> weightStrings = Weights.Select(w => $"({w.template}, {w.response})").ToList();
+            System.Windows.Forms.MessageBox.Show(string.Join(Environment.NewLine, weightStrings));
         }
 
         RectangleF panel = RightPanel;
         float width = panel.Width * .5f;
         float height = 45;
-        float x = panel.X + panel.Width / 2 - width / 2;
+        float x = panel.X + panel.Width * .6f - width / 2;
+        float labelsize = height;
+        float labelx = panel.X + panel.Width * .2f - labelsize / 2;
 
         Form form = new Form("Repostas");
 
-        for (int i = 0; i < weights.Length; i++)
-            form.Append(
-                new TextInput(x, y + (i * gap), $"input_{i}")
-                {
-                    Value = i != index ? weights[i] : "",
-                    Size = new SizeF(width, height),
-                    isDisabled = i == index,
-                    Style =
+        labels = new();
+        for (int i = 0; i < shapes.Length; i++)
+        {
+            ConstructorInfo constructor = shapes[i].GetConstructor(new Type[] { typeof(int) });
+            Object shape = (Object)constructor.Invoke(new object[] { weights[i] });
+            Bitmap label = (Bitmap)shape.Image;
+
+            IInput input = new TextInput(x, y + (i * gap), $"input_{i}")
+            {
+                Value = i == index ? weights[i] : "",
+                Size = new SizeF(width, height),
+                isDisabled = i == index,
+                Style =
                     {
                         BackgroundColor = Color.White,
                         Color = Color.Black,
@@ -119,8 +137,13 @@ public class Level1 : Game
                         BorderColor = Color.Black,
                         BorderWidth = 2
                     }
-                }
-            );
+            };
+
+            RectangleF rect = new RectangleF(labelx, y + (i * gap), labelsize, labelsize);
+
+            form.Append(input);
+            labels.Add((label, rect));
+        }
 
         width = 200;
         height = 80;
@@ -148,19 +171,20 @@ public class Level1 : Game
         Forms.Add(form);
     }
 
-    private void GenerateShapes(int[] weights)
+    private void GenerateShapes(Type[] shapes, int[] weights, int[] quant = null)
     {
-        for (int i = 0; i < 5; i++)
+        if (quant is null)
+            quant = new int[] { 5, 5, 5, 5, 5 };
+
+        for (int i = 0; i < shapes.Length; i++)
         {
-            AddObject(new Circle(weights[i]));
-            AddObject(new Hexagon(weights[i]));
-            AddObject(new Square(weights[i]));
-            AddObject(new Star(weights[i]));
-            AddObject(new Triangle(weights[i]));
+            ConstructorInfo constructor = shapes[i].GetConstructor(new Type[] { typeof(int) });
+            foreach (var _ in quant)
+                AddObject((Object)constructor.Invoke(new object[] { weights[i] }));
         }
     }
 
-    private void GenerateGame(int y = 500, int width = 150)
+    private void GenerateGame(int y = 700, int width = 150)
     {
         RectangleF area = BetweenLabels;
 

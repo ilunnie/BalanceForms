@@ -32,7 +32,7 @@ public class Plate
     }
     public PointF Anchor { get; set; } = new PointF(0, 0);
     public PointF AnchorScreen => new PointF(Position.X + Anchor.X, Position.Y + Anchor.Y);
-    public float Speed { get; set; } = 3;
+    public float Speed { get; set; } = 1.5f;
 
     private float? lastangle = null;
     public void Update(float angle)
