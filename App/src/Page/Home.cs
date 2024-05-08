@@ -160,11 +160,6 @@ public class Home : Page
         if (e.KeyCode == Keys.Escape)
             App.SetPage(new Close(this));
 
-        if ((e.Modifiers & Keys.Alt) == Keys.Alt && e.KeyCode == Keys.Tab)
-        {
-            e.Handled = true;
-            e.SuppressKeyPress = true;
-        }
     }
 
 }
