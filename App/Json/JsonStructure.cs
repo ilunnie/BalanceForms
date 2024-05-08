@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 public class TestResult
 {
     public string nome { get; set; }
@@ -8,11 +10,8 @@ public class TestResult
 
 public class Test
 {
-    public int triangulo { get; set; }
-    public int quadrado { get; set; }
-    public int circulo { get; set; }
-    public int estrela { get; set; }
-    public int hexagono { get; set; }
+    public List<int> corretas { get; set; } = new();
+    public List<int> respostas { get; set; } = new();
     public int tempo { get; set; }
     public int quantidade { get; set; }
     public int tentativas { get; set; }

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,7 +17,7 @@ public class HttpRequester
         _baseUri = baseUri;
     }
 
-    public async Task<string> GetAsync(string endpoint)
+    public async Task<string> GetResAsync(string endpoint)
     {
         try
         {
@@ -30,6 +32,31 @@ public class HttpRequester
         catch (Exception ex)
         {
             return $"Error: {ex.Message}";
+        }
+    }
+
+    public async Task<(int[], int[])> GetValuesAsync(string endpoint)
+    {
+        try
+        {
+            // MessageBox.Show(_baseUri + endpoint);
+            HttpResponseMessage response = await _client.GetAsync(_baseUri + endpoint);
+
+            response.EnsureSuccessStatusCode();
+            string res = await response.Content.ReadAsStringAsync();
+            ApiValues apiValues = JsonBuilder.Deserialize<ApiValues>(res);
+
+            // Extract the values from prova1 and prova2 properties
+            List<int> prova1Values = apiValues.prova1;
+            List<int> prova2Values = apiValues.prova2;
+            MessageBox.Show(prova1Values[0].ToString());
+
+            return (prova1Values.ToArray(), prova2Values.ToArray());
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show( $"Error: {ex.Message}");
+            return (null, null);
         }
     }
 

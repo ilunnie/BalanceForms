@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Text.Json;
 
@@ -16,13 +17,13 @@ public class JsonBuilder
         };
     }
 
-    public JsonBuilder AddProva1(Test test)
+    public JsonBuilder SetProva1(Test test)
     {
         json.prova1 = test;
         return this;
     }
 
-    public JsonBuilder AddProva2(Test test)
+    public JsonBuilder SetProva2(Test test)
     {
         json.prova2 = test;
         return this;
@@ -44,7 +45,7 @@ public class JsonBuilder
     {
         return json;
     }
-    public static ApiResponse Deserialize(string json)
+    public static ApiResponse DeserializeRes(string json)
     {
         try
         {
@@ -54,6 +55,19 @@ public class JsonBuilder
         {
             // Handle or log the exception as needed
             return new ApiResponse { response = 0 };
+        }
+    }
+
+    public static ApiValues DeserializeValues(string json)
+    {
+        try
+        {
+            return JsonSerializer.Deserialize<ApiValues>(json);
+        }
+        catch
+        {
+            // Handle or log the exception as needed
+            return null;
         }
     }
 
@@ -78,6 +92,19 @@ public class JsonBuilder
             {
                 return reader.ReadToEnd();
             }
+        }
+    }
+
+    public static T Deserialize<T>(string json)
+    {
+        try
+        {
+            return JsonSerializer.Deserialize<T>(json);
+        }
+        catch
+        {
+            // Handle or log the exception as needed
+            return default;
         }
     }
 }

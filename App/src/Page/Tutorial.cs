@@ -6,6 +6,7 @@ using BoschForms.Forms;
 using BoschForms.Screen;
 using BoschForms.Drawing;
 using System.Reflection;
+using System.Threading.Tasks;
 using System.Linq;
 
 public class Tutorial : Game
@@ -19,12 +20,15 @@ public class Tutorial : Game
     private bool ModalOn = false;
     private RectangleF ModalRect;
     private Form Modal;
+
+    private HttpRequester requester = new();
+    private Respostas apiResponse = Respostas.NComecado;
     public override void Load()
     {
         App.Background = Color.White;
 
         //! 🆄🆂🅴🅵🆄🅻 🆂🅴🆃🆃🅸🅽🅶🆂
-        #region //! ■■■■■■■■■■■■■■■■■■■■■■■
+#region //! ■■■■■■■■■■■■■■■■■■■■■■■
         PointF center = Screen.Center;
         float width = Screen.Width;
         float height = Screen.Height;
@@ -41,8 +45,11 @@ public class Tutorial : Game
         //! ■■■■■■■■■■■■■■■■■■■■■■■
         #endregion
 
+        // await GetTestStatus();
+
         Type[] shapes = { typeof(Circle), typeof(Square), typeof(Triangle) };
         int[] weights = { 300, 200, 100 };
+
         GenerateRightPanel(shapes, weights);
         GenerateShapes(shapes, weights);
         GenerateGame();
@@ -50,8 +57,10 @@ public class Tutorial : Game
         GenerateConfirmModal();
     }
 
-    public override void Update()
+    public override async void Update()
     {
+        await GetTestStatus();
+        VerifyTestStatus();
         RectangleF panel = LeftPanel;
         Dictionary<Type, List<Object>> objects = this.DictObjects;
         float gap = panel.Height / (objects.Count + 1);
@@ -357,5 +366,17 @@ public class Tutorial : Game
         background.Dispose();
 
         Modal.Draw(g);
+    }
+
+    private async Task GetTestStatus()
+    {
+        string testStatus = await requester.GetResAsync("test");
+        var res = JsonBuilder.DeserializeRes(testStatus);
+        this.apiResponse = res.response;
+    }
+    private void VerifyTestStatus()
+    {
+        if (this.apiResponse == Respostas.Comecado)
+            App.SetPage(new Level1());
     }
 }
