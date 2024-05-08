@@ -4,7 +4,7 @@ using System.Drawing;
 public abstract class Object
 {
     public string Name { get; protected set; }
-    public int Weight { get; protected set; }
+    public abstract int Weight { get; }
     public Image Image { get; protected set; }
     public SizeF Size { get; set; }
     public PointF Position { get; set; }

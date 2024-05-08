@@ -28,10 +28,13 @@ public class Square : Object
         }
     }
 
+    private static int _weight;
+    public override int Weight => _weight;
+
     public Square(PointF position, int weight = 500)
     {
         this.Name = "Square";
-        this.Weight = weight;
+        _weight = weight;
         this.Image = image;
         this.Position = position;
         this.Size = new SizeF(100, 100);

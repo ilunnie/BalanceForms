@@ -32,10 +32,13 @@ public class Hexagon : Object
         }
     }
 
+    private static int _weight;
+    public override int Weight => _weight;
+
     public Hexagon(PointF position, int weight = 500)
     {
         this.Name = "Hexagon";
-        this.Weight = weight;
+        _weight = weight;
         this.Image = image;
         this.Position = position;
         this.Size = new SizeF(100, 100);

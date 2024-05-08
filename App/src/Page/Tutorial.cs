@@ -111,10 +111,7 @@ public class Tutorial : Game
         float textInputWidth = Screen.Width * .15f;
 
         void SubmitPesar(object obj)
-        {
-            Form form = (Form)obj;
-            bool succes = true;
-        }
+            => Balances.ForEach(balance => balance.ToWeight());
 
         float buttonWidth = 200;
         float buttonHeight = 80;
@@ -258,13 +255,4 @@ public class Tutorial : Game
 
         Forms.ForEach(form => form.Draw(g));
     }
-
-    public override void MouseMove()
-        => Cursor.Move();
-
-    public override void MouseDown(System.Windows.Forms.MouseButtons button)
-        => Cursor.Click();
-
-    public override void MouseUp(System.Windows.Forms.MouseButtons button)
-        => Cursor.Drop();
 }

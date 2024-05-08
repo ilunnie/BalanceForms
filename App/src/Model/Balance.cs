@@ -66,8 +66,8 @@ public class Balance
 
     public void ToWeight()
     {
-        int left = this.Left.Count;
-        int right = this.Right.Count;
+        int left = this.Left.Weight;
+        int right = this.Right.Weight;
         this.Weight = (Weight)left.CompareTo(right);
     }
 }

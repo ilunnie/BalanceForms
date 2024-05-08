@@ -1,0 +1,203 @@
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using BoschForms;
+using BoschForms.Forms;
+using BoschForms.Screen;
+using BoschForms.Drawing;
+
+public class Level1 : Game
+{
+    public static int Attempts { get; private set; } = 0;
+    public static List<(int template, int response)> Weights { get; private set; }
+    private RectangleF RightPanel;
+    private RectangleF LeftPanel;
+    private RectangleF BetweenLabels;
+    public override void Load()
+    {
+        App.Background = Color.White;
+
+        //! 🆄🆂🅴🅵🆄🅻 🆂🅴🆃🆃🅸🅽🅶🆂
+        #region //! ■■■■■■■■■■■■■■■■■■■■■■■
+        float width = Screen.Width;
+        float height = Screen.Height;
+        float RPwidth = width * .16f;
+        RightPanel = new RectangleF(width - RPwidth, 0, RPwidth, height);
+        float LPwidth = RPwidth / 2;
+        LeftPanel = new RectangleF(0, 0, LPwidth, height);
+        BetweenLabels = new RectangleF(LeftPanel.Right, 0, RightPanel.Left - LPwidth, height);
+        //! ■■■■■■■■■■■■■■■■■■■■■■■
+        #endregion
+
+        int[] weights = {750, 1000, 500, 200, 100};
+        GenerateRightPanel(weights);
+        GenerateShapes(weights);
+        GenerateGame();
+    }
+
+    public override void Update()
+    {
+        Balances.ForEach(balance => balance.Update());
+    }
+
+    public override void Draw(Graphics g)
+    {
+        SolidBrush shadow = new SolidBrush(Color.FromArgb(100, 100, 100));
+        SolidBrush panel = new SolidBrush(Color.FromArgb(239, 241, 242));
+        
+        RectangleF panelL = LeftPanel;
+        g.FillRectangle(new RectangleF(3, 0, panelL.Width, panelL.Height), (0, 30, 30, 0), shadow);
+        g.FillRectangle(panelL, (0, 30, 30, 0), panel);
+
+        RectangleF panelR = RightPanel;
+        g.FillRectangle(new RectangleF(panelR.X - 3, 0, panelR.Width, panelR.Height), (0, 30, 30, 0), shadow);
+        g.FillRectangle(panelR, (0, 30, 30, 0), panel);
+
+        shadow.Dispose();
+        
+        Balances.ForEach(balance => balance.Draw(g));
+        Forms.ForEach(form => form.Draw(g));
+        Objects.ForEach(obj => obj.Draw(g));
+    }
+
+    public override void KeyboardDown(object o, System.Windows.Forms.KeyEventArgs e)
+    {
+        if (e.KeyCode == System.Windows.Forms.Keys.Escape)
+            if (Client.Mode == "debug") App.Close();
+            else App.SetPage(new Close(this), false);
+    }
+
+    private void GenerateRightPanel(int[] weights, int y = 200, int gap = 120, int? correct_index = null)
+    {
+        //? Index do valor default
+        int index;
+        if (correct_index is null)
+        {
+            int[] arr = (int[])weights.Clone();
+            Array.Sort(arr);
+
+            int value = arr[arr.Length / 2];
+            index = Array.IndexOf(weights, value);
+        }
+        else index = correct_index.Value;
+
+        void Submit(object obj)
+        {
+            Form form = (Form)obj;
+            var body = form.Body;
+
+            Weights = new List<(int template, int response)>();
+            for (int i = 0; i < weights.Length; i++)
+            {
+                int response;
+                if (!int.TryParse(body[$"input_{i}"].Value.ToString(), out response))
+                    response = 0;
+
+                Weights.Add((weights[i], response));
+            }
+        }
+
+        RectangleF panel = RightPanel;
+        float width = panel.Width * .5f;
+        float height = 45;
+        float x = panel.X + panel.Width / 2 - width / 2;
+
+        Form form = new Form("Repostas");
+
+        for (int i = 0; i < weights.Length; i++)
+            form.Append(
+                new TextInput(x, y + (i * gap), $"input_{i}")
+                {
+                    Value = i != index ? weights[i] : "",
+                    Size = new SizeF(width, height),
+                    isDisabled = i == index,
+                    Style =
+                    {
+                        BackgroundColor = Color.White,
+                        Color = Color.Black,
+                        BorderRadius = 10,
+                        BorderColor = Color.Black,
+                        BorderWidth = 2
+                    }
+                }
+            );
+
+        width = 200;
+        height = 80;
+        x = panel.X + panel.Width / 2 - width / 2;
+
+        form.Append(
+            new Button(x, Screen.Height * .82f)
+            {
+                Name = "Submit",
+                Value = form,
+                Label = "Responder",
+                Size = new SizeF(width, height),
+                Style =
+                {
+                    BackgroundColor = Color.FromArgb(0, 123, 192),
+                    Color = Color.White,
+                    BorderRadius = 10,
+                    BorderColor = Color.Black,
+                    BorderWidth = 2
+                },
+                OnChange = Submit,
+            }
+        );
+
+        Forms.Add(form);
+    }
+
+    private void GenerateShapes(int[] weights)
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            AddObject(new Circle(weights[i]));
+            AddObject(new Hexagon(weights[i]));
+            AddObject(new Square(weights[i]));
+            AddObject(new Star(weights[i]));
+            AddObject(new Triangle(weights[i]));
+        }
+    }
+
+    private void GenerateGame(int y = 500, int width = 150)
+    {
+        RectangleF area = BetweenLabels;
+
+        float widthpercent = area.Width * .25f - width / 2;
+        Balances.Add(new Balance(area.Left + widthpercent, y));
+        Balances.Add(new Balance(area.Right - widthpercent - width, y));
+
+        void Submit(object obj)
+        {
+            Balances.ForEach(balance => balance.ToWeight());
+            Attempts++;
+        }
+
+        float bwidth = 200;
+        float bheight = 80;
+        float bx = area.Left + area.Width / 2 - bwidth / 2;
+        float by = area.Height * .8f;
+
+        Form form = new Form("toWeight");
+
+        form.Append(
+            new Button(bx, by)
+            {
+                Label = "Pesar",
+                Size = new SizeF(bwidth, bheight),
+                Style =
+                {
+                    BackgroundColor = Color.FromArgb(0, 123, 192),
+                    Color = Color.White,
+                    BorderRadius = 10,
+                    BorderColor = Color.Black,
+                    BorderWidth = 2,
+                },
+                OnChange = Submit,
+            }
+        );
+
+        Forms.Add(form);
+    }
+}

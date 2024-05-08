@@ -22,10 +22,13 @@ public class Circle : Object
         }
     }
 
+    private static int _weight;
+    public override int Weight => _weight;
+
     public Circle(PointF position, int weight = 500)
     {
         this.Name = "Circle";
-        this.Weight = weight;
+        _weight = weight;
         this.Image = image;
         this.Position = position;
         this.Size = new SizeF(100, 100);

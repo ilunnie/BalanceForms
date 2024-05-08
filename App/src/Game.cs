@@ -30,4 +30,22 @@ public abstract class Game : Page
         => _objects
             .SelectMany(obj => obj.Value)
             .ToList();
+
+    public override void OnMouseMove()
+    {
+        Cursor.Move();
+        base.OnMouseMove();
+    }
+
+    public override void OnMouseDown(MouseButtons button)
+    {
+        if(button == MouseButtons.Left) Cursor.Click();
+        base.OnMouseDown(button);
+    }
+
+    public override void OnMouseUp(MouseButtons button)
+    {
+        if(button == MouseButtons.Left) Cursor.Drop();
+        base.OnMouseUp(button);
+    }
 }
