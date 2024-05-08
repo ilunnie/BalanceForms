@@ -33,9 +33,8 @@ def change_values():
             'changevalues.html',
             default_values = default_values
         )
+    test_started = 0
     values = list(list(request.form.values()))
-    print(len(default_values))
-    print(default_values[8])
     with open("values.txt", "w") as file:
         for i in range(len(default_values)):
             file.write(f"{values[i] if values[i] != '' else default_values[i]}")
