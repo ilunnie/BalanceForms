@@ -12,12 +12,12 @@ using System;
 public class Home : Page
 {
     private Bitmap Background;
-    private AltTabInterceptor _interceptor;
+    private KeyLocked _interceptor;
     public static string Name;
     public static DateTime Date;
     public override void Load()
     {
-        App.SetPage(new Level1()); // To remove
+        // App.SetPage(new Level1()); // To remove
         App.Background = Color.White;
 
         var center = Screen.Center;
@@ -113,7 +113,7 @@ public class Home : Page
 
         GaussianBlur filter = new GaussianBlur();
         Background = filter.Apply(new Bitmap("assets/bosch-entrada.jpg"));
-        _interceptor = new AltTabInterceptor();
+        _interceptor = new KeyLocked();
     }
 
     public override void Update()

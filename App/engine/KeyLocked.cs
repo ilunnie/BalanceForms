@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-public class AltTabInterceptor
+public class KeyLocked
 {
     private const int WH_KEYBOARD_LL = 13;
     private const int WM_KEYDOWN = 0x0100;
@@ -16,7 +16,7 @@ public class AltTabInterceptor
     private IntPtr _hookID = IntPtr.Zero;
     private LowLevelKeyboardProc _proc;
 
-    public AltTabInterceptor()
+    public KeyLocked()
     {
         _proc = HookCallback;
         _hookID = SetHook(_proc);
