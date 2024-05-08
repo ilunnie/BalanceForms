@@ -23,8 +23,14 @@ public abstract class Game : Page
 
     public Game RemoveObject(Object _object)
     {
-        if (_objects.ContainsKey(_object.GetType()))
-            _objects[_object.GetType()].Remove(_object);
+        Type key = _object.GetType();
+        if (_objects.ContainsKey(key))
+        {
+            _objects[key].Remove(_object);
+
+            if (_objects[key].Count == 0)
+                _objects.Remove(key);
+        }
         return this;
     }
 
