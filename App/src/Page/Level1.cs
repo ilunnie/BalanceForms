@@ -103,6 +103,8 @@ public class Level1 : Game
         Balances.ForEach(balance => balance.Draw(g));
         Forms.ForEach(form => form.Draw(g));
         if (ModalOn) DrawModal(g);
+
+        TutorialAnimations.DraginHold(g);
     }
 
     public override void KeyboardDown(object o, System.Windows.Forms.KeyEventArgs e)

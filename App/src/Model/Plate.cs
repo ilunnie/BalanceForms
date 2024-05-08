@@ -21,6 +21,9 @@ public class Plate
     public SizeF Size { get; set; }
     public float Width => Size.Width;
     public float Height => Size.Height;
+    public virtual float CenterX => X + Width / 2;
+    public virtual float CenterY => Y + Height / 2;
+    public virtual PointF Center => new PointF(CenterX, CenterY);
     public RectangleF Rectangle => new RectangleF(Position, Size);
     public RectangleF Area
     {
