@@ -17,13 +17,10 @@ def create_workbook():
         os.mkdir(f'../Provas/{date}')
 
     workbook = Workbook()
-
-    workbook.add_named_style(header)
-    workbook.add_named_style(default)
-    workbook.add_named_style(percentage)
-    workbook.add_named_style(correct)
-    workbook.add_named_style(wrong)
-    workbook.add_named_style(null)
+    
+    wbstyles = [header, default, percentage, correct, wrong, null]
+    for style in wbstyles:
+        workbook.add_named_style(style)
 
     worksheet1 = workbook.active
     worksheet1.title = 'Prova 1'

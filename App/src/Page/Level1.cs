@@ -9,7 +9,6 @@ using System.Reflection;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Globalization;
-using System.Threading;
 
 public class Level1 : Game
 {
@@ -26,6 +25,7 @@ public class Level1 : Game
     private HttpRequester requester = new();
     private Respostas apiResponse = Respostas.NComecado;
     private bool sent = false;
+    private bool set = false;
 
     public override async void Load()
     {
@@ -42,8 +42,13 @@ public class Level1 : Game
         BetweenLabels = new RectangleF(LeftPanel.Right, 0, RightPanel.Left - LPwidth, height);
         //! ■■■■■■■■■■■■■■■■■■■■■■■
         #endregion
+        if (!set)
+        {
+            // var (w1, w2) = await requester.GetValuesAsync("values");
+            // weights1 = w1;
+            // weights2 = w2;
 
-        Type[] shapes =
+            Type[] shapes =
         {
             typeof(Circle),
             typeof(Hexagon),
@@ -51,10 +56,13 @@ public class Level1 : Game
             typeof(Star),
             typeof(Triangle)
         };
-        
         int[] weights = { 750, 1000, 500, 200, 100 };
-        GenerateRightPanel(shapes, weights);
-        GenerateShapes(shapes, weights);
+
+            // System.Windows.Forms.MessageBox.Show( weights);
+            GenerateRightPanel(shapes, weights);
+            GenerateShapes(shapes, weights);
+            set = true;
+        }
         GenerateGame();
 
         TestTimer.Start();
@@ -62,8 +70,6 @@ public class Level1 : Game
 
     public override async void Update()
     {
-        var (w1, w2) = await requester.GetValuesAsync("values");
-        System.Windows.Forms.MessageBox.Show( w1.ToString());
         await GetTestStatus();
         VerifyTestStatus();
         RectangleF panel = LeftPanel;

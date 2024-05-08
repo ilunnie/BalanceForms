@@ -268,6 +268,11 @@ input:focus {
     .values-main {
         width: 80%;
     }
+
+    .timer {
+        font-size: 150px;
+    }
+    
 }
 
 @media screen and (max-width: 460px) {
@@ -283,6 +288,18 @@ input:focus {
 
     #modal main {
         width: 90%;
+    }
+
+    #modal main h1 {
+        font-size: 25px;
+    }
+
+    #modal main h2 {
+        font-size: 20px;
+    }
+
+    .text {
+        font-size: 20px;
     }
 
     .values-main {

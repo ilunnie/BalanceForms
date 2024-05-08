@@ -33,9 +33,8 @@ def change_values():
             'changevalues.html',
             default_values = default_values
         )
+    test_started = 0
     values = list(list(request.form.values()))
-    print(len(default_values))
-    print(default_values[8])
     with open("values.txt", "w") as file:
         for i in range(len(default_values)):
             file.write(f"{values[i] if values[i] != '' else default_values[i]}")
@@ -50,11 +49,13 @@ def change_values():
 
 @bp.route('/values', methods=['GET'])
 def values():
+    global test_started
+    test_started = 0
     values = {'prova1': [], 'prova2': []}
     with open("values.txt", "r") as file:
         tests_values = file.read().splitlines()
-        values['prova1'] = tests_values[0].split(', ')
-        values['prova2'] = tests_values[1].split(', ')
+        values['prova1'] = [int(number) for number in (tests_values[0].split(','))]
+        values['prova2'] = [int(number) for number in (tests_values[1].split(','))]
     return values, 200
 
 @bp.route('/timer', methods=['GET', 'POST'])
