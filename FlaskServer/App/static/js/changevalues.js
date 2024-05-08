@@ -3,6 +3,7 @@ var test2 = document.getElementById('test2');
 var btn_next = document.getElementById('next');
 var btn_change = document.getElementById('change');
 var modal = document.getElementById('modal');
+var form = document.getElementById('form');
 
 var choose1 = document.getElementById('choose1');
 var choose2 = document.getElementById('choose2');
@@ -46,4 +47,16 @@ function openModal() {
     choose10.innerHTML = value10.value == '' ? default_values[9] : value10.value;
 
     modal.style.display = 'flex'
+}
+
+function closeModal() {
+    modal.style.display = 'none'
+    test1.style.display = 'flex';
+    btn_next.style.display = 'block';
+    test2.style.display = 'none';
+    btn_change.style.display = 'none';
+}
+
+function submitForm() {
+    form.submit();
 }

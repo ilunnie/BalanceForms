@@ -86,6 +86,20 @@ input:focus {
     align-items: center;
 }
 
+#modal main {
+    background-color: white;
+    width: 60%;
+    padding: 20px 20px 0 20px;
+    border-radius: 20px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+
+#modal main h1 {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 45px;
+}
+
 .format-modal {
     display: flex;
     flex-direction: row;
@@ -119,19 +133,12 @@ input:focus {
 }
 
 .align-buttons .send-button {
-    width: 10em;
-    font-weight: 500;
-    background-color: rgb(68, 81, 252);
-    border: 1px solid rgb(180, 180, 180);
-    border-radius: 10px;
-    font-size: 15px;
-    margin: 10px;
-    padding: 10px;
+    color: white;
+    background-color: #007bc0;
 }
 
 .align-buttons .send-button:hover {
-    cursor: pointer;
-    background-color: rgb(30, 45, 255);
+    background-color: #00629a;
 }
 
 .return_button {
@@ -250,6 +257,10 @@ input:focus {
         width: 80%;
     }
 
+    #modal main {
+        width: 80%;
+    }
+    
     .values-header {
         margin-bottom: 10%;
     }
@@ -267,6 +278,10 @@ input:focus {
     main {
         background-color: transparent;
         box-shadow: none;
+        width: 90%;
+    }
+
+    #modal main {
         width: 90%;
     }
 
