@@ -6,6 +6,8 @@ app = Flask(__name__)
 bp = Blueprint('balance', __name__, url_prefix='/', static_folder='static')
 
 test_started = 0
+default_values = [1000, 750, 500, 200, 100, 
+                      675, 600, 500, 50, 25]
 
 @bp.route('/', methods=['GET', 'POST'])
 def index():
@@ -13,13 +15,13 @@ def index():
     if request.method == 'GET':
         test_started = 0
         return render_template(
-            'index.html',
+            'index.html'
         )
     test_started = 2
     time.sleep(1)
     test_started = 0
     return render_template(
-            'final.html',
+            'final.html'
         )
 
 @bp.route('/change_values', methods=['GET', 'POST'])
@@ -29,11 +31,18 @@ def change_values():
         test_started = 0
         return render_template(
             'changevalues.html',
+            default_values = default_values
         )
-    values = request.form
+    values = list(list(request.form.values()))
+    print(len(default_values))
+    print(default_values[8])
     with open("values.txt", "w") as file:
-        file.write(f"{values['value1']}, {values['value2']}, {values['value3']}, {values['value4']}, {values['value5']}\n")
-        file.write(f"{values['value6']}, {values['value7']}, {values['value8']}, {values['value9']}, {values['value10']}")
+        for i in range(len(default_values)):
+            file.write(f"{values[i] if values[i] != '' else default_values[i]}")
+            if i != 4 and i != 9:
+                file.write(',')
+            if i == 4:
+                file.write('\n')
     test_started = 0
     return render_template(
         'index.html',
