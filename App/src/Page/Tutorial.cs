@@ -80,10 +80,15 @@ public class Tutorial : Game
     public override void KeyboardDown(object o, System.Windows.Forms.KeyEventArgs e)
     {
         if (e.KeyCode == System.Windows.Forms.Keys.Escape)
-            App.Close();
-
-        if (e.KeyCode == System.Windows.Forms.Keys.Escape)
             App.SetPage(new Close(this));
+
+
+        if ((e.Modifiers & System.Windows.Forms.Keys.Alt) == System.Windows.Forms.Keys.Alt && e.KeyCode == System.Windows.Forms.Keys.F4)
+        {
+            e.Handled = true;
+            e.SuppressKeyPress = true;
+        }
+    
     }
 
     private void GenerateLeftPanel()

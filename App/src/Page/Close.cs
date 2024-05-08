@@ -210,5 +210,11 @@ public class Close : Page
     }
 
     public override void KeyboardDown(object o, KeyEventArgs e)
-    { }
+    { 
+        if ((e.Modifiers & Keys.Alt) == Keys.Alt && e.KeyCode == Keys.F4)
+        {
+            e.Handled = true;
+            e.SuppressKeyPress = true;
+        }
+    }
 }
