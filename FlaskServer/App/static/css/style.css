@@ -76,7 +76,7 @@ input:focus {
     outline: 0;
 }
 
-modal {
+#modal {
     display: none;
     background-color: rgba(0, 0, 0, 0.281);
     width: 100%;
