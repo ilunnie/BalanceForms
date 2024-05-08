@@ -16,6 +16,9 @@ public class Level1 : Game
     private RectangleF LeftPanel;
     private RectangleF BetweenLabels;
     private List<(Bitmap image, RectangleF rect)> labels;
+    private bool ModalOn = false;
+    private RectangleF ModalRect;
+    private Form Modal;
     public override void Load()
     {
         App.Background = Color.White;
@@ -37,6 +40,8 @@ public class Level1 : Game
         GenerateRightPanel(shapes, weights);
         GenerateShapes(shapes, weights);
         GenerateGame();
+
+        GenerateConfirmModal();
     }
 
     public override void Update()
@@ -59,6 +64,9 @@ public class Level1 : Game
             line += gap;
         }
         Balances.ForEach(balance => balance.Update());
+
+        this.FormsOn = !ModalOn;
+        this.CursorOn = !ModalOn;
     }
 
     public override void Draw(Graphics g)
@@ -94,6 +102,7 @@ public class Level1 : Game
 
         Balances.ForEach(balance => balance.Draw(g));
         Forms.ForEach(form => form.Draw(g));
+        if (ModalOn) DrawModal(g);
     }
 
     public override void KeyboardDown(object o, System.Windows.Forms.KeyEventArgs e)
@@ -257,5 +266,73 @@ public class Level1 : Game
         );
 
         Forms.Add(form);
+    }
+
+    private void GenerateConfirmModal()
+    {
+        RectangleF modal = ModalRect;
+        Form form = new Form("Confirm");
+
+        void cancel(object obj) => ModalOn = false;
+        void submit(object obj)
+        {
+            //ToDo Move to the next level
+        }
+
+        float width = 150;
+        float height = 75;
+        float y = modal.Y + modal.Height * .6f;
+        form.Add = new List<IInput>() {
+            new Button(modal.X + modal.Width * .25f - width / 2, y)
+            {
+                Label = "Cancelar",
+                Size = new SizeF(width, height),
+                Style = {
+                    BackgroundColor = Color.FromArgb(0,123,192),
+                    Color = Color.White,
+                    BorderRadius = 15,
+                    BorderColor = Color.Black,
+                    BorderWidth = 2
+                },
+                OnChange = cancel
+            },
+            new Button(modal.X + modal.Width * .75f - width / 2, y)
+            {
+                Label = "Enviar",
+                Size = new SizeF(width, height),
+                Style = {
+                    BackgroundColor = Color.FromArgb(0,123,192),
+                    Color = Color.White,
+                    BorderRadius = 15,
+                    BorderColor = Color.Black,
+                    BorderWidth = 2
+                },
+                OnChange = submit
+            },
+        };
+
+        this.Modal = form;
+    }
+
+    private void DrawModal(Graphics g)
+    {
+        RectangleF screen = new RectangleF(0, 0, Screen.Width, Screen.Height);
+        SolidBrush background = new SolidBrush(Color.FromArgb(150, 0, 0, 0));
+        g.FillRectangle(screen, background);
+
+        SolidBrush shadow = new SolidBrush(Color.Black);
+        SolidBrush color = new SolidBrush(Color.White);
+        g.FillRectangle(new RectangleF(ModalRect.X + 5, ModalRect.Y + 5, ModalRect.Width, ModalRect.Height), 25, shadow);
+        g.FillRectangle(ModalRect, 25, color);
+
+        RectangleF text = new RectangleF(ModalRect.X, ModalRect.Y, ModalRect.Width, ModalRect.Height * .6f);
+        Font font = new Font("Arial", 20);
+        g.DrawString(text, "Deseja mesmo enviar?", font, Brushes.Black, alignment: StringAlignment.Center);
+
+        shadow.Dispose();
+        color.Dispose();
+        background.Dispose();
+
+        Modal.Draw(g);
     }
 }
