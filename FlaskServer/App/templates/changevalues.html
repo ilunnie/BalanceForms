@@ -17,7 +17,7 @@
         </nav>
     </header>
     <main class="values-main">
-        <form action="/change_values" method="post">
+        <form id="form" action="/change_values" method="post">
             <h1>Defina os valores</h1>
             <div class="test1" id="test1">
                 <h2>Prova 1</h2>
@@ -46,7 +46,7 @@
                 <input type="number" name="value10" id="value10" placeholder="Digite um valor..." autocomplete="off">
             </div>
             <button class="default-button" type="button" id="next" onclick="nextValues()">Próxima</button>
-            <button class="default-button" type="submit" id="change">Alterar</button>
+            <button class="default-button" type="button" id="change" onclick="confirmValues()">Alterar</button>
             <script src="{{ url_for('static', filename='js/changevalues.js')}}"></script>
         </form>
     </main>
