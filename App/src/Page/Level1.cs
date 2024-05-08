@@ -101,7 +101,13 @@ public class Level1 : Game
         if (e.KeyCode == System.Windows.Forms.Keys.Escape)
             if (Client.Mode == "debug") App.Close();
             else App.SetPage(new Close(this));
+        if ((e.Modifiers & System.Windows.Forms.Keys.Alt) == System.Windows.Forms.Keys.Alt && e.KeyCode == System.Windows.Forms.Keys.F4)
+        {
+            e.Handled = true;
+            e.SuppressKeyPress = true;
+        }
     }
+
 
     private void GenerateRightPanel(Type[] shapes, int[] weights, int y = 200, int gap = 120, int? correct_index = null)
     {

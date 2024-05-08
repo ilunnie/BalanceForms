@@ -118,6 +118,12 @@ public class Tutorial : Game
             else App.SetPage(new Close(this));
 
         if (ModalOn) Modal.OnKeyDown(o, e);
+
+        if ((e.Modifiers & System.Windows.Forms.Keys.Alt) == System.Windows.Forms.Keys.Alt && e.KeyCode == System.Windows.Forms.Keys.F4)
+        {
+            e.Handled = true;
+            e.SuppressKeyPress = true;
+        }
     }
 
     public override void KeyboardUp(object o, System.Windows.Forms.KeyEventArgs e)

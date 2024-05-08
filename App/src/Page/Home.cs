@@ -12,7 +12,7 @@ using System;
 public class Home : Page
 {
     private Bitmap Background;
-
+    private AltTabInterceptor _interceptor;
     public static string Name;
     public static DateTime Date;
     public override void Load()
@@ -58,6 +58,7 @@ public class Home : Page
                 Date = date;
                 App.SetPage(new Tutorial());
             }
+
         }
 
         Form login = new Form("login");
@@ -112,6 +113,7 @@ public class Home : Page
 
         GaussianBlur filter = new GaussianBlur();
         Background = filter.Apply(new Bitmap("assets/bosch-entrada.jpg"));
+        _interceptor = new AltTabInterceptor();
     }
 
     public override void Update()
@@ -149,11 +151,21 @@ public class Home : Page
 
     public override void KeyboardDown(object o, KeyEventArgs e)
     {
-
-
-       if (e.KeyCode == Keys.Escape || e.KeyCode == Keys.Menu || e.KeyCode == Keys.Tab)
+        if ((e.Modifiers & Keys.Alt) == Keys.Alt && e.KeyCode == Keys.F4)
+        {
+            e.Handled = true;
+            e.SuppressKeyPress = true;
+        }
+    
+        if (e.KeyCode == Keys.Escape)
             App.SetPage(new Close(this));
-        
+
+        if ((e.Modifiers & Keys.Alt) == Keys.Alt && e.KeyCode == Keys.Tab)
+        {
+            e.Handled = true;
+            e.SuppressKeyPress = true;
+        }
     }
+
 }
 
