@@ -11,14 +11,18 @@ public class Form
     public List<IInput> Inputs { get; private set; }
     private IInput Selected = null;
 
-    public Dictionary<string, IInput> Body {
-        get {
+    public Dictionary<string, IInput> Body
+    {
+        get
+        {
             Dictionary<string, IInput> dict = new();
 
-            Inputs.ForEach(input => {
+            Inputs.ForEach(input =>
+            {
                 if (dict.ContainsKey(input.Name))
                     dict[input.Name] = input;
-                else dict.Add(input.Name, input);
+                else
+                    dict.Add(input.Name, input);
             });
 
             return dict;
@@ -31,12 +35,12 @@ public class Form
         this.Inputs = new();
     }
 
-    public void Draw(Graphics g)
-        => this.Inputs.ForEach(input => input.Draw(g));
+    public void Draw(Graphics g) => this.Inputs.ForEach(input => input.Draw(g));
 
     public virtual void OnMouseDown(MouseButtons button)
     {
-        this.Inputs.ForEach(input => {
+        this.Inputs.ForEach(input =>
+        {
             if (input.Contains(Client.Cursor) && button == MouseButtons.Left)
                 Selected = input;
             input.MouseKeyDown(button);
@@ -45,7 +49,8 @@ public class Form
 
     public virtual void OnMouseUp(MouseButtons button)
     {
-        this.Inputs.ForEach(input => {
+        this.Inputs.ForEach(input =>
+        {
             input.MouseKeyUp(button);
             input.Enable = false;
         });
@@ -64,31 +69,37 @@ public class Form
         switch (e.KeyCode)
         {
             case Keys.Tab:
+                if (selected is null)
+                    break;
                 selected.Enable = false;
-                toSelect[(toSelect.IndexOf(selected) + 1) % toSelect.Count]
-                    .Enable = true;
-            break;
-            
+                toSelect[(toSelect.IndexOf(selected) + 1) % toSelect.Count].Enable = true;
+                break;
+
             case Keys.Enter:
+                if (selected is null)
+                    break;
                 int index = (toSelect.IndexOf(selected) + 1) % toSelect.Count;
                 if (index != 0)
                 {
                     selected.Enable = false;
                     this.Inputs[index].Enable = true;
                 }
-            break;
+                break;
         }
         this.Inputs.ForEach(input => input.KeyBoardDown(o, e));
     }
 
-    public virtual void OnKeyUp(object o,  KeyEventArgs e)
-        => this.Inputs.ForEach(input => input.KeyBoardUp(o, e));
+    public virtual void OnKeyUp(object o, KeyEventArgs e) =>
+        this.Inputs.ForEach(input => input.KeyBoardUp(o, e));
 
-
-    public List<IInput> Add { set {
-        foreach (var input in value)
-            this.Inputs.Add(input);
-    }}
+    public List<IInput> Add
+    {
+        set
+        {
+            foreach (var input in value)
+                this.Inputs.Add(input);
+        }
+    }
 
     public virtual Form Append(IInput input)
     {

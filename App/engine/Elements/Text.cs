@@ -39,7 +39,7 @@ public static partial class Elements
                 format.LineAlignment = linealignment;
                 if (!wrap) format.FormatFlags = StringFormatFlags.NoWrap;
 
-                g.DrawString(text, rectscreen, font, brush, format);
+                g.DrawString(text, rect, font, brush, format);
             }
         }
 

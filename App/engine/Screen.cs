@@ -11,8 +11,8 @@ public static class Screen
     public static float CenterX => Width / 2;
     public static float CenterY => Height / 2;
 
-    private static float ScaleX => Client.Screen.Width / Dimension.Width;
-    private static float ScaleY => Client.Screen.Height / Dimension.Height;
+    public static float ScaleX => Client.Screen.Width / Dimension.Width;
+    public static float ScaleY => Client.Screen.Height / Dimension.Height;
 
     public static PointF Position(float x, float y)
         =>  new PointF(x * ScaleX, y * ScaleY);

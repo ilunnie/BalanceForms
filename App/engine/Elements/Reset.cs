@@ -6,14 +6,14 @@ namespace BoschForms.Drawing;
 public static partial class Elements
 {
     public static void DrawRectangle(this Graphics g, RectangleF rect, Pen pen)
-        => g.DrawEllipse(pen, rect.OnScreen());
+        => g.DrawRectangle(pen, rect.OnScreen());
     public static void FillRectangle(this Graphics g, RectangleF rect, Brush brush)
         => g.FillRectangle(brush, rect.OnScreen());
 
     public static void DrawEllipse(this Graphics g, float x, float y, float width, float height, Pen pen)
-        => g.DrawEllipse(pen, x, y, width, height);
+        => g.DrawEllipse(pen, Screen.Screen.Rectangle(x, y, width, height));
     public static void FillEllipse(this Graphics g, float x, float y, float width, float height, Brush brush)
-        => g.FillEllipse(brush, x, y, width, height);
+        => g.FillEllipse(brush, Screen.Screen.Rectangle(x, y, width, height));
 
     public static void DrawArc(this Graphics g, RectangleF rect, float startAngle, float sweepAngle, Pen pen)
         => g.DrawArc(pen, rect.OnScreen(), startAngle, sweepAngle);

@@ -12,11 +12,12 @@ using System;
 public class Home : Page
 {
     private Bitmap Background;
-
+    private AltTabInterceptor _interceptor;
     public static string Name;
     public static DateTime Date;
     public override void Load()
     {
+        App.SetPage(new Tutorial()); // To remove
         App.Background = Color.White;
 
         var center = Screen.Center;
@@ -57,6 +58,7 @@ public class Home : Page
                 Date = date;
                 App.SetPage(new Tutorial());
             }
+
         }
 
         Form login = new Form("login");
@@ -68,12 +70,12 @@ public class Home : Page
                 Style = {
                     BackgroundColor = Color.White,
                     BorderColor = Color.Black,
-                    BorderWidth = 1,
+                    BorderWidth = 2,
                     BorderRadius = 10,
                 },
                 Selected = {
                     BorderWidth = 2,
-                    BorderColor = Color.Blue,
+                    BorderColor = Color.FromArgb(111, 111, 111),
                 },
             },
             new TextInput(center.X - textInputWidth / 2, Screen.Height * .5f) {
@@ -83,12 +85,12 @@ public class Home : Page
                 Style = {
                     BackgroundColor = Color.White,
                     BorderColor = Color.Black,
-                    BorderWidth = 1,
+                    BorderWidth = 2,
                     BorderRadius = 10,
                 },
                 Selected = {
                     BorderWidth = 2,
-                    BorderColor = Color.Blue,
+                    BorderColor = Color.FromArgb(111, 111, 111),
                 }
             },
             new Button(center.X - buttonWidth / 2, Screen.Height * .62f) {
@@ -99,7 +101,9 @@ public class Home : Page
                 Style = {
                     BackgroundColor = Color.FromArgb(0,123,192),
                     Color = Color.White,
-                    BorderRadius = 40,
+                    BorderRadius = 15,
+                    BorderColor = Color.Black,
+                    BorderWidth = 2
                 },
                 OnChange = Submit,
             }
@@ -109,6 +113,7 @@ public class Home : Page
 
         GaussianBlur filter = new GaussianBlur();
         Background = filter.Apply(new Bitmap("assets/bosch-entrada.jpg"));
+        _interceptor = new AltTabInterceptor();
     }
 
     public override void Update()
@@ -126,7 +131,7 @@ public class Home : Page
         float x = center.X - width / 2;
         float y = center.Y - height / 2;
 
-        RectangleF shadow = new RectangleF(x * 1.02f, y * 1.02f, width, height);
+        RectangleF shadow = new RectangleF(x * 1.01f, y * 1.01f, width, height);
         SolidBrush shadowbrush = new SolidBrush(Color.FromArgb(100, 100, 100));
         g.FillRectangle(shadow, 50, shadowbrush);
 
@@ -146,7 +151,21 @@ public class Home : Page
 
     public override void KeyboardDown(object o, KeyEventArgs e)
     {
+        if ((e.Modifiers & Keys.Alt) == Keys.Alt && e.KeyCode == Keys.F4)
+        {
+            e.Handled = true;
+            e.SuppressKeyPress = true;
+        }
+    
         if (e.KeyCode == Keys.Escape)
-            App.Close();
+            App.SetPage(new Close(this));
+
+        if ((e.Modifiers & Keys.Alt) == Keys.Alt && e.KeyCode == Keys.Tab)
+        {
+            e.Handled = true;
+            e.SuppressKeyPress = true;
+        }
     }
+
 }
+
