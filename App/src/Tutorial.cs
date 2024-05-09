@@ -44,6 +44,7 @@ public static class TutorialAnimations
     }
 
     private static VirtualCursor cursor = null;
+    private static long frame = 0;
 
     private static bool withObj = false;
     private static Object obj = null;
@@ -102,5 +103,39 @@ public static class TutorialAnimations
         }
 
         return DraginHold(g, obj, plate);
+    }
+
+    private static int clicktick = 1000;
+    private static bool click = false;
+    public static bool clickButton(Graphics g, Button button, float clicksize = 10, float clickline = 5)
+    {
+        if (cursor is null)
+        {
+            float size = 50;
+            cursor = new VirtualCursor(obj.Center, new SizeF(size, size))
+            {
+                Anchor = new PointF(size * .423f, size * .118f)
+            };
+        }
+
+        cursor.Destiny = new PointF(button.Position.X + button.Size.Width / 2, button.Position.Y + button.Size.Height / 2);
+        cursor.Move();
+
+        if (click)
+        {
+            PointF point = new PointF(cursor.Position.X + cursor.Anchor.X, cursor.Position.Y + cursor.Anchor.Y);
+            Pen pen = new Pen(Color.FromArgb((int)(255 * (1 - Opacity)), 255, 255, 255), clickline);
+            g.DrawEllipse(point.X - clicksize, point.Y - clicksize, clicksize * 2, clicksize * 2, pen);
+            pen.Dispose();
+        }
+        g.DrawImage(CursorImage, cursor.Rectangle);
+
+        frame = Math.Min(frame + Client.Frame, clicktick);
+        if (frame % clicktick == 0 && cursor.AtTheDestiny)
+        {
+            click = !click;
+            frame = 0;
+        }
+        return cursor.AtTheDestiny;
     }
 }
