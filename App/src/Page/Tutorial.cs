@@ -43,7 +43,7 @@ public class Tutorial : Game
         LeftPanel = new RectangleF(0, 0, LPwidth, height);
         BetweenLabels = new RectangleF(LeftPanel.Right, 0, RightPanel.Left - LPwidth, height);
         float modalwidth = 500;
-        float modalheight = 250;
+        float modalheight = 400;
         float x = center.X - modalwidth / 2;
         float y = center.Y - modalheight / 2;
         ModalRect = new RectangleF(x, y, modalwidth, modalheight);
@@ -153,8 +153,11 @@ public class Tutorial : Game
 
         Balances.ForEach(balance => balance.Draw(g));
         Forms.ForEach(form => form.Draw(g));
-        if (ModalOn) DrawModal(g);
-
+        if (ModalOn)
+        {
+            DrawModal(g);
+            return;
+        }
         if (draginHold) TutorialAnimations.DraginHold(g);
         if (toWeight) TutorialAnimations.clickButton(g, toWeightButton);
         if (toRespond) TutorialAnimations.clickButton(g, toRespondButton);
@@ -351,18 +354,14 @@ public class Tutorial : Game
         Form form = new Form("Confirm");
 
         void cancel(object obj) => ModalOn = false;
-        void submit(object obj)
-        {
-            //ToDo Move to the next level
-        }
 
-        float width = 150;
+        float width = 250;
         float height = 75;
-        float y = modal.Y + modal.Height * .6f;
+        float y = modal.Y + modal.Height * .7f;
         form.Add = new List<IInput>() {
-            new Button(modal.X + modal.Width * .25f - width / 2, y)
+            new Button(modal.X + modal.Width * .5f / 2, y)
             {
-                Label = "Cancelar",
+                Label = "Fechar",
                 Size = new SizeF(width, height),
                 Style = {
                     BackgroundColor = Color.FromArgb(0,123,192),
@@ -372,20 +371,7 @@ public class Tutorial : Game
                     BorderWidth = 2
                 },
                 OnChange = cancel
-            },
-            new Button(modal.X + modal.Width * .75f - width / 2, y)
-            {
-                Label = "Enviar",
-                Size = new SizeF(width, height),
-                Style = {
-                    BackgroundColor = Color.FromArgb(0,123,192),
-                    Color = Color.White,
-                    BorderRadius = 15,
-                    BorderColor = Color.Black,
-                    BorderWidth = 2
-                },
-                OnChange = submit
-            },
+            }
         };
 
         this.Modal = form;
@@ -402,9 +388,38 @@ public class Tutorial : Game
         g.FillRectangle(new RectangleF(ModalRect.X + 5, ModalRect.Y + 5, ModalRect.Width, ModalRect.Height), 25, shadow);
         g.FillRectangle(ModalRect, 25, color);
 
-        RectangleF text = new RectangleF(ModalRect.X, ModalRect.Y, ModalRect.Width, ModalRect.Height * .6f);
+        RectangleF title_box = new RectangleF(ModalRect.X, ModalRect.Y, ModalRect.Width, ModalRect.Height * .3f);
+        Font title = new Font("Arial", 25, FontStyle.Bold);
+        g.DrawString(title_box, "Valores inseridos:", title, Brushes.Black, alignment: StringAlignment.Center);
+
         Font font = new Font("Arial", 20);
-        g.DrawString(text, "Deseja mesmo enviar?", font, Brushes.Black, alignment: StringAlignment.Center);
+        RectangleF rect = new RectangleF(ModalRect.Left, title_box.Bottom, ModalRect.Width, ModalRect.Height *.38f);
+        
+        var dict = DictObjects.Keys.ToList();
+
+        float gap = rect.Height / (Weights.Count + 1);
+        for (int i = 0; i < Weights.Count; i++)
+        {
+            RectangleF form = new RectangleF(rect.X, rect.Y + (i * gap), rect.Width / 2, gap);
+            RectangleF check = new RectangleF(rect.X + rect.Width / 2, rect.Y + (i * gap), rect.Width / 2, gap);
+
+            ConstructorInfo constructor = dict[i].GetConstructor(new Type[] { typeof(int) });
+            Object shape = (Object)constructor.Invoke(new object[] { 0 });
+            string name = shape.Name;
+            g.DrawString(
+                form,
+                name,
+                font,
+                Brushes.Black,
+                alignment: StringAlignment.Far
+            );
+            g.DrawString(
+                check,
+                Weights[i].response == Weights[i].template ? "✔" : "✖",
+                font,
+                Weights[i].response == Weights[i].template ? Brushes.LightGreen : Brushes.Red
+            );
+        }
 
         shadow.Dispose();
         color.Dispose();
