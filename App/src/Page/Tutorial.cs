@@ -22,8 +22,9 @@ public class Tutorial : Game
     private Form Modal;
 
     private HttpRequester requester = new();
-    private Respostas apiResponse = Respostas.NComecado;
-    public override void Load()
+    private Respostas apiResponse;
+    private bool set = false;
+    public override async void Load()
     {
         App.Background = Color.White;
 
@@ -44,8 +45,8 @@ public class Tutorial : Game
         ModalRect = new RectangleF(x, y, modalwidth, modalheight);
         //! ■■■■■■■■■■■■■■■■■■■■■■■
         #endregion
-
-        // await GetTestStatus();
+    
+        await GetTestStatus();
 
         Type[] shapes = { typeof(Circle), typeof(Square), typeof(Triangle) };
         int[] weights = { 300, 200, 100 };
@@ -86,6 +87,7 @@ public class Tutorial : Game
 
     public override void Draw(Graphics g)
     {
+        if (!set) return;
         SolidBrush shadow = new SolidBrush(Color.FromArgb(100, 100, 100));
         SolidBrush panel = new SolidBrush(Color.FromArgb(239, 241, 242));
 
@@ -373,10 +375,11 @@ public class Tutorial : Game
         string testStatus = await requester.GetResAsync("test");
         var res = JsonBuilder.DeserializeRes(testStatus);
         this.apiResponse = res.response;
+        set = true;
     }
     private void VerifyTestStatus()
     {
         if (this.apiResponse == Respostas.Comecado)
-            App.SetPage(new Level1());
+            App.SetPage(new Level1(), true);
     }
 }

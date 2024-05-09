@@ -49,7 +49,7 @@ public class HttpRequester
             // Extract the values from prova1 and prova2 properties
             List<int> prova1Values = apiValues.prova1;
             List<int> prova2Values = apiValues.prova2;
-            MessageBox.Show(prova1Values[2].ToString());
+            // MessageBox.Show(prova1Values[2].ToString());
 
             return (prova1Values.ToArray(), prova2Values.ToArray());
         }

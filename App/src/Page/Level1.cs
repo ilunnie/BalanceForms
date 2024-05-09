@@ -44,23 +44,23 @@ public class Level1 : Game
         #endregion
         if (!set)
         {
-            // var (w1, w2) = await requester.GetValuesAsync("values");
-            // weights1 = w1;
-            // weights2 = w2;
+            var (w1, w2) = await requester.GetValuesAsync("values");
+            weights1 = w1;
+            weights2 = w2;
 
             Type[] shapes =
-        {
-            typeof(Circle),
-            typeof(Hexagon),
-            typeof(Square),
-            typeof(Star),
-            typeof(Triangle)
-        };
-        int[] weights = { 750, 1000, 500, 200, 100 };
+            {
+                typeof(Circle),
+                typeof(Hexagon),
+                typeof(Square),
+                typeof(Star),
+                typeof(Triangle)
+            };
+            int[] weights = { 750, 1000, 500, 200, 100 };
 
             // System.Windows.Forms.MessageBox.Show( weights);
-            GenerateRightPanel(shapes, weights);
-            GenerateShapes(shapes, weights);
+            GenerateShapes(shapes, w1);
+            GenerateRightPanel(shapes, w1);
             set = true;
         }
         GenerateGame();
@@ -95,6 +95,7 @@ public class Level1 : Game
 
     public override void Draw(Graphics g)
     {
+        if (!set) return;
         SolidBrush shadow = new SolidBrush(Color.FromArgb(100, 100, 100));
         SolidBrush panel = new SolidBrush(Color.FromArgb(239, 241, 242));
 
@@ -380,7 +381,8 @@ public class Level1 : Game
             .SetProva2(
                 new Test
                 {
-
+                    corretas = weights2.ToList(),
+                    respostas = new List<int> {0, 0, 0, 0, 0}
                 }
             )
             .Build();
