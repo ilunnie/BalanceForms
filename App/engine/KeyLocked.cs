@@ -3,18 +3,20 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
-public class AltTabInterceptor
+public class KeyLocked
 {
     private const int WH_KEYBOARD_LL = 13;
     private const int WM_KEYDOWN = 0x0100;
     private const int WM_SYSKEYDOWN = 0x0104;
-    private const int VK_TAB = 0x09;
-    private const int VK_MENU = 0x12;
+    private const int VK_TAB = 0x09;  // Código da tecla do Tab
+    private const int VK_MENU = 0x12;  // Código da tecla do Alt
+    private const int VK_LWIN = 0x5B; // Código da tecla do Windows esquerda
+    private const int VK_RWIN = 0x5C; // Código da tecla do Windows direita
 
     private IntPtr _hookID = IntPtr.Zero;
     private LowLevelKeyboardProc _proc;
 
-    public AltTabInterceptor()
+    public KeyLocked()
     {
         _proc = HookCallback;
         _hookID = SetHook(_proc);
@@ -42,10 +44,10 @@ public class AltTabInterceptor
         if (nCode >= 0 && (wParam == (IntPtr)WM_KEYDOWN || wParam == (IntPtr)WM_SYSKEYDOWN))
         {
             int vkCode = Marshal.ReadInt32(lParam);
-            if ((Keys)vkCode == Keys.Tab && GetKeyState(VK_MENU) < 0)
+            if (((Keys)vkCode == Keys.Tab && GetKeyState(VK_MENU) < 0) || (vkCode == VK_LWIN || vkCode == VK_RWIN)) // Alt + Tab e Tecla do Windows
             {
-                // Alt + Tab pressed
-                return (IntPtr)1; // Block the key
+                // Alt + Tab ou tecla do Windows pressionada
+                return (IntPtr)1; // Bloquear a tecla
             }
         }
         return CallNextHookEx(_hookID, nCode, wParam, lParam);

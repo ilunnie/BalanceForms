@@ -24,6 +24,10 @@ public class Tutorial : Game
     private HttpRequester requester = new();
     private Respostas apiResponse;
     private bool set = false;
+
+    private Button toWeightButton;
+    private Button toRespondButton;
+
     public override async void Load()
     {
         App.Background = Color.White;
@@ -58,6 +62,10 @@ public class Tutorial : Game
         GenerateConfirmModal();
     }
 
+    private bool draginHold = true;
+    private bool toWeight = false;
+    private bool toRespond = false;
+
     public override async void Update()
     {
         await GetTestStatus();
@@ -83,6 +91,17 @@ public class Tutorial : Game
 
         this.FormsOn = !ModalOn;
         this.CursorOn = !ModalOn;
+
+        if (draginHold && Balances.Sum(balance => balance.Count) > 0)
+        {
+            draginHold = false;
+            toWeight = true;
+        }
+        if (toWeight && Attempts > 0)
+        {
+            toWeight = false;
+            toRespond = true;
+        }
     }
 
     public override void Draw(Graphics g)
@@ -120,6 +139,10 @@ public class Tutorial : Game
         Balances.ForEach(balance => balance.Draw(g));
         Forms.ForEach(form => form.Draw(g));
         if (ModalOn) DrawModal(g);
+
+        if (draginHold) TutorialAnimations.DraginHold(g);
+        if (toWeight) TutorialAnimations.clickButton(g, toWeightButton);
+        if (toRespond) TutorialAnimations.clickButton(g, toRespondButton);
     }
 
     public override void KeyboardDown(object o, System.Windows.Forms.KeyEventArgs e)
@@ -183,7 +206,7 @@ public class Tutorial : Game
 
             List<string> weightStrings = Weights.Select(w => $"({w.template}, {w.response})").ToList();
             ModalOn = true;
-            // System.Windows.Forms.MessageBox.Show(string.Join(Environment.NewLine, weightStrings));
+            toRespond = false;
         }
 
         RectangleF panel = RightPanel;
@@ -227,14 +250,13 @@ public class Tutorial : Game
         height = 80;
         x = panel.X + panel.Width / 2 - width / 2;
 
-        form.Append(
-            new Button(x, Screen.Height * .82f)
-            {
-                Name = "Submit",
-                Value = form,
-                Label = "Responder",
-                Size = new SizeF(width, height),
-                Style =
+        toRespondButton = new Button(x, Screen.Height * .82f)
+        {
+            Name = "Submit",
+            Value = form,
+            Label = "Responder",
+            Size = new SizeF(width, height),
+            Style =
                 {
                     BackgroundColor = Color.FromArgb(0, 123, 192),
                     Color = Color.White,
@@ -242,9 +264,9 @@ public class Tutorial : Game
                     BorderColor = Color.Black,
                     BorderWidth = 2
                 },
-                OnChange = Submit,
-            }
-        );
+            OnChange = Submit,
+        };
+        form.Append(toRespondButton);
 
         Forms.Add(form);
     }
@@ -282,12 +304,11 @@ public class Tutorial : Game
 
         Form form = new Form("toWeight");
 
-        form.Append(
-            new Button(bx, by)
-            {
-                Label = "Pesar",
-                Size = new SizeF(bwidth, bheight),
-                Style =
+        this.toWeightButton = new Button(bx, by)
+        {
+            Label = "Pesar",
+            Size = new SizeF(bwidth, bheight),
+            Style =
                 {
                     BackgroundColor = Color.FromArgb(0, 123, 192),
                     Color = Color.White,
@@ -295,9 +316,9 @@ public class Tutorial : Game
                     BorderColor = Color.Black,
                     BorderWidth = 2,
                 },
-                OnChange = Submit,
-            }
-        );
+            OnChange = Submit,
+        };
+        form.Append(this.toWeightButton);
 
         Forms.Add(form);
     }

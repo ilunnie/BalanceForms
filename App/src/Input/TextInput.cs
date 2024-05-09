@@ -182,16 +182,25 @@ public class TextInput : IInput
         }
     }
 
+
+
     public void KeyBoardDown(object o, System.Windows.Forms.KeyEventArgs e)
     {
         if (!this.Enable || this.isDisabled)
             return;
-        if (char.IsLetterOrDigit((char)e.KeyCode))
+
+        char character = '\0';
+
+        if (e.KeyCode >= Keys.NumPad0 && e.KeyCode <= Keys.NumPad9)
+        {
+            character = (char)('0' + (e.KeyCode - Keys.NumPad0));
+        }
+        else if (char.IsLetterOrDigit((char)e.KeyCode))
         {
             bool capsLock = Control.IsKeyLocked(Keys.CapsLock);
             bool shiftPressed = (e.Modifiers & Keys.Shift) != 0;
 
-            char character = (char)e.KeyValue;
+            character = (char)e.KeyValue;
             if (char.IsLetter(character))
             {
                 if ((capsLock && !shiftPressed) || (!capsLock && shiftPressed))
@@ -199,24 +208,18 @@ public class TextInput : IInput
                 else
                     character = char.ToLower(character);
             }
-
-            Value = _value.Insert(this.Cursor, character.ToString());
-            this.Cursor++;
         }
-        else if(SpecialsChars.ContainsKey(e.KeyData))
+        else if (SpecialsChars.ContainsKey(e.KeyData))
         {
-            Value = _value.Insert(this.Cursor, SpecialsChars[e.KeyData].ToString());
-            this.Cursor++;
+            character = SpecialsChars[e.KeyData];
         }
         else
         {
             switch (e.KeyCode)
             {
                 case Keys.Space:
-                    Value = _value.Insert(this.Cursor, " ");
-                    this.Cursor++;
+                    character = ' '; // Espaço
                     break;
-
                 case Keys.Back:
                     if (this.Cursor > 0)
                     {
@@ -224,24 +227,28 @@ public class TextInput : IInput
                         Value = _value.Remove(this.Cursor, 1);
                     }
                     break;
-
                 case Keys.Delete:
                     if (this.Cursor < _value.Length)
                         Value = _value.Remove(this.Cursor, 1);
                     break;
-
                 case Keys.Left:
                     if (this.Cursor > 0)
                         this.Cursor--;
                     break;
-
                 case Keys.Right:
                     if (this.Cursor < _value.Length)
                         this.Cursor++;
                     break;
             }
         }
+
+        if (character != '\0')
+        {
+            Value = _value.Insert(this.Cursor, character.ToString());
+            this.Cursor++;
+        }
     }
+
 
     public void KeyBoardUp(object o, System.Windows.Forms.KeyEventArgs e)
     {
@@ -258,7 +265,8 @@ public class TextInput : IInput
 
     }
 
-    private Dictionary<Keys, char> SpecialsChars = new() {
+    private Dictionary<Keys, char> SpecialsChars = new()
+    {
         [Keys.OemQuestion] = '/',
         [Keys.LButton] = '/',
         [Keys.OemPeriod] = '.',

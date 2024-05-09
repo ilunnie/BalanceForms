@@ -12,7 +12,7 @@ using System;
 public class Home : Page
 {
     private Bitmap Background;
-    private AltTabInterceptor _interceptor;
+    private KeyLocked _interceptor;
     public static string Name;
     public static DateTime Date;
     public override void Load()
@@ -112,7 +112,7 @@ public class Home : Page
 
         GaussianBlur filter = new GaussianBlur();
         Background = filter.Apply(new Bitmap("assets/bosch-entrada.jpg"));
-        _interceptor = new AltTabInterceptor();
+        _interceptor = new KeyLocked();
     }
 
     public override void Update()
@@ -159,11 +159,6 @@ public class Home : Page
         if (e.KeyCode == Keys.Escape)
             App.SetPage(new Close(this));
 
-        if ((e.Modifiers & Keys.Alt) == Keys.Alt && e.KeyCode == Keys.Tab)
-        {
-            e.Handled = true;
-            e.SuppressKeyPress = true;
-        }
     }
 
 }
