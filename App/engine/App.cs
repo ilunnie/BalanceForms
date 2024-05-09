@@ -28,7 +28,7 @@ public static class App
 
         var timer = new  System.Windows.Forms.Timer
         {
-            Interval = 20,
+            Interval = 13,
         };
 
         form = new System.Windows.Forms.Form

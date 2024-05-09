@@ -326,7 +326,10 @@ public class Level1 : Game
     private void VerifyTestStatus()
     {
         if (this.apiResponse == Respostas.Parou)
+        {
+            if (sent) return;
             SendJson();
+        }
     }
 
     private async void SendJson()
@@ -389,7 +392,7 @@ public class Level1 : Game
 
         string json = JsonBuilder.Serialize(jsonBuilder.Build());
         await requester.PostAsync("test", json);
-        System.Windows.Forms.MessageBox.Show(json);
         sent = true;
+        System.Windows.Forms.MessageBox.Show(json);
     }
 }

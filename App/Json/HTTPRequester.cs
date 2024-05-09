@@ -67,6 +67,7 @@ public class HttpRequester
             HttpContent content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
             HttpResponseMessage response = await _client.PostAsync(_baseUri + endpoint, content);
             response.EnsureSuccessStatusCode();
+            // response.Dispose();
             System.Console.WriteLine(jsonContent);
             return await response.Content.ReadAsStringAsync();
         }
