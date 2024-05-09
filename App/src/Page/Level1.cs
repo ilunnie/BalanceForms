@@ -27,7 +27,7 @@ public class Level1 : Game
     private Respostas apiResponse = Respostas.NComecado;
     private bool sent = false;
     private bool set = false;
-    private TestResult json;
+    public static TestResult json;
 
 
     private bool ModalOn = false;
@@ -348,14 +348,14 @@ public class Level1 : Game
     {
         if (this.apiResponse == Respostas.Parou)
         {
+            SendJson(true);
             if (!sent)
                 System.Windows.Forms.MessageBox.Show("O Teste Acabou! Suas respostas foram enviadas automaticamente");
-            SendJson();
-            App.Close();
+            App.SetPage(new Close());
         }
     }
 
-    private async void SendJson()
+    private async void SendJson(bool send)
     {
         int CountEqualNumbers(List<(int, int)> tuples)
         {
@@ -374,29 +374,28 @@ public class Level1 : Game
         var body = form.Body;
 
         Weights = new List<(int template, int response)>();
-        int[] weights = { 750, 1000, 500, 200, 100 };
 
-        for (int i = 0; i < weights.Length; i++)
+        for (int i = 0; i < weights1.Length; i++)
         {
             int response;
             if (!int.TryParse(body[$"input_{i}"].Value.ToString(), out response))
                 response = 0;
 
-            Weights.Add((weights[i], response));
+            Weights.Add((weights1[i], response));
         }
 
         List<string> weightStrings = Weights.Select(w => $"({w.template}, {w.response})").ToList();
 
         var jsonBuilder = new JsonBuilder(
             Home.Name,
-            Home.Date.ToString("dd/mm/yyyy")
+            Home.Date.ToString("dd/MM/yyyy")
         );
 
         jsonBuilder
             .SetProva1(
                 new Test
                 {
-                    corretas = weights.ToList(),
+                    corretas = weights1.ToList(),
                     respostas = Weights.Select(weight => weight.response).ToList(),
                     tempo = (int)TestTimer.Stop().TotalSeconds,
                     quantidade = Balances.Sum(balance => balance.Count),
@@ -412,11 +411,14 @@ public class Level1 : Game
                 }
             )
             .Build();
-        this.json = jsonBuilder.Build();
-        string json = JsonBuilder.Serialize(jsonBuilder.Build());
-        sent = true;
-        await requester.PostAsync("test", json);
-        System.Windows.Forms.MessageBox.Show("Respostas Enviadas");
+        json = jsonBuilder.Build();
+        if (send)
+        {
+            string jsonPost = JsonBuilder.Serialize(jsonBuilder.Build());
+            sent = true;
+            await requester.PostAsync("test", jsonPost);
+            System.Windows.Forms.MessageBox.Show("Respostas Enviadas");
+        }
     }
 
     private void DrawModal(Graphics g)
@@ -448,7 +450,9 @@ public class Level1 : Game
         void cancel(object obj) => ModalOn = false;
         void submit(object obj)
         {
-            SendJson();
+            SendJson(false);
+            ModalOn = false;
+            App.SetPage(new Level2());
         }
 
         float width = 150;
