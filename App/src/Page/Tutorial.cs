@@ -135,8 +135,7 @@ public class Tutorial : Game
 
 
         string titulo = "Bem-Vindo ao Tutorial";
-        string texto = "Nesse tutorial você vai aprender como funciona a balança:\n    • Você tem a sua disposição algumas figuras, e através do quadrado que pesa 200 você tem que descobrir o peso das outras peças.\n    • Arraste as figuras para a balança e depois aperte o botão de pesar.\n    • Após descobrir os valores das peças, responda o questionario ao lado.";
-
+        string texto = "Seu primerio desafio:\n    • Você tem 5 figuras a sua disposição, e através da figura que já possui seu peso você deve descobrir o peso das outras peças.\n    • Arraste as figuras para a balança e depois aperte o botão de pesar.\n    • Após descobrir os valores das peças, responda o questionario ao lado.";
 
         Font fontComentario = new Font("Arial", 24);
         Brush brush = Brushes.Black;

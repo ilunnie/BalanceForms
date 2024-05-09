@@ -159,7 +159,7 @@ public class Level1 : Game
 
 
         string titulo = "Nível 1";
-        string texto = "Seu primerio desafio:\n    • Você tem a sua disposição 5 figuras, e através da figura que já tem seu peso você tem que descobrir o peso das outras peças.\n    • Arraste as figuras para a balança e depois aperte o botão de pesar.\n    • Após descobrir os valores das peças, responda o questionario ao lado.";
+        string texto = "Seu primerio desafio:\n    • Você tem 5 figuras a sua disposição, e através da figura que já possui seu peso você deve descobrir o peso das outras peças.\n    • Arraste as figuras para a balança e depois aperte o botão de pesar.\n    • Após descobrir os valores das peças, responda o questionario ao lado.";
 
 
         Font fontComentario = new Font("Arial", 24);
