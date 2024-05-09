@@ -26,6 +26,7 @@ public class Level1 : Game
     private Respostas apiResponse = Respostas.NComecado;
     private bool sent = false;
     private bool set = false;
+    private TestResult json;
 
     public override async void Load()
     {
@@ -180,23 +181,24 @@ public class Level1 : Game
 
         void Submit(object obj)
         {
-            Form form = (Form)obj;
-            var body = form.Body;
+            // Form form = (Form)obj;
+            // var body = form.Body;
 
-            Weights = new List<(int template, int response)>();
-            for (int i = 0; i < weights.Length; i++)
-            {
-                int response;
-                if (!int.TryParse(body[$"input_{i}"].Value.ToString(), out response))
-                    response = 0;
+            // Weights = new List<(int template, int response)>();
+            // for (int i = 0; i < weights.Length; i++)
+            // {
+            //     int response;
+            //     if (!int.TryParse(body[$"input_{i}"].Value.ToString(), out response))
+            //         response = 0;
 
-                Weights.Add((weights[i], response));
-            }
+            //     Weights.Add((weights[i], response));
+            // }
 
-            List<string> weightStrings = Weights
-                .Select(w => $"({w.template}, {w.response})")
-                .ToList();
-            System.Windows.Forms.MessageBox.Show(string.Join(Environment.NewLine, weightStrings));
+            // List<string> weightStrings = Weights
+            //     .Select(w => $"({w.template}, {w.response})")
+            //     .ToList();
+            // System.Windows.Forms.MessageBox.Show(string.Join(Environment.NewLine, weightStrings));
+            SendJson();
         }
 
         RectangleF panel = RightPanel;
@@ -327,8 +329,9 @@ public class Level1 : Game
     {
         if (this.apiResponse == Respostas.Parou)
         {
-            if (sent) return;
             SendJson();
+            System.Windows.Forms.MessageBox.Show("O Teste Acabou!");
+            App.Close();
         }
     }
 
@@ -378,6 +381,7 @@ public class Level1 : Game
                     respostas = Weights.Select(weight => weight.response).ToList(),
                     tempo = (int)TestTimer.Stop().TotalSeconds,
                     quantidade = Balances.Sum(balance => balance.Count),
+                    tentativas = Attempts,
                     acertos = (float)CountEqualNumbers(Weights) / 4
                 }
             )
@@ -389,10 +393,11 @@ public class Level1 : Game
                 }
             )
             .Build();
-
+        this.json = jsonBuilder.Build();
         string json = JsonBuilder.Serialize(jsonBuilder.Build());
-        await requester.PostAsync("test", json);
         sent = true;
-        System.Windows.Forms.MessageBox.Show(json);
+        await requester.PostAsync("test", json);
+        System.Windows.Forms.MessageBox.Show("Respostas Enviadas");
+    
     }
 }
