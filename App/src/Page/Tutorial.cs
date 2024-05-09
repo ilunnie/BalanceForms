@@ -133,6 +133,22 @@ public class Tutorial : Game
             if (quant != "0") g.DrawString(obj.Rectangle, quant, font, Brushes.White, alignment: StringAlignment.Center);
         }
 
+
+        string titulo = "Bem-Vindo ao Tutorial";
+        string texto = "Nesse tutorial você vai aprender como funciona a balança:\n    • Você tem a sua disposição algumas figuras, e através do quadrado que pesa 200 você tem que descobrir o peso das outras peças.\n    • Arraste as figuras para a balança e depois aperte o botão de pesar.\n    • Após descobrir os valores das peças, responda o questionario ao lado.";
+
+
+        Font fontComentario = new Font("Arial", 24);
+        Brush brush = Brushes.Black;
+
+        RectangleF xTitulo = new RectangleF(BetweenLabels.X, BetweenLabels.Y + 20, BetweenLabels.Width, 80);
+        g.DrawString(xTitulo, titulo, fontComentario, brush, alignment: StringAlignment.Center);
+        fontComentario = new Font("Arial", 16);
+        float margin = 30;
+        RectangleF xTexto = new RectangleF(BetweenLabels.X + margin, xTitulo.Bottom, BetweenLabels.Width - margin * 2,  160);
+        g.DrawString(xTexto, texto, fontComentario, brush, wrap:true);
+
+
         shadow.Dispose();
         panel.Dispose();
 
@@ -284,6 +300,7 @@ public class Tutorial : Game
         }
     }
 
+    private int lastcount = 0;
     private void GenerateGame(int y = 700, int width = 150)
     {
         RectangleF area = BetweenLabels;
@@ -294,7 +311,13 @@ public class Tutorial : Game
         void Submit(object obj)
         {
             Balances.ForEach(balance => balance.ToWeight());
-            Attempts++;
+
+            int count = Balances.Sum(balance => balance.Count);
+            if (count != lastcount)
+            {
+                Attempts++;
+                lastcount = count;
+            }
         }
 
         float bwidth = 200;
