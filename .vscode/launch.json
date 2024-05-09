@@ -10,7 +10,7 @@
             "request": "launch",
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/App/bin/Debug/net7.0-windows/App.dll",
-            "args": [],
+            "args": ["debug"],
             "cwd": "${workspaceFolder}/App",
             "console": "internalConsole",
             "stopAtEntry": false
