@@ -72,7 +72,6 @@ public class Level1 : Game
             List<int> weights = new List<int>() {
                 w1[0], w1[1], w1[3], w1[4]
             };
-
             Utils.Shuffle(weights);
 
             weights1 = new List<int>() {
