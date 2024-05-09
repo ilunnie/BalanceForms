@@ -58,7 +58,6 @@ public class Level1 : Game
         if (!set)
         {
             var (w1, w2) = await requester.GetValuesAsync("values");
-            weights1 = w1;
             weights2 = w2;
 
             Type[] shapes =
@@ -69,11 +68,19 @@ public class Level1 : Game
                 typeof(Star),
                 typeof(Triangle)
             };
-            int[] weights = { 750, 1000, 500, 200, 100 };
 
-            // System.Windows.Forms.MessageBox.Show( weights);
-            GenerateShapes(shapes, w1);
-            GenerateRightPanel(shapes, w1);
+            List<int> weights = new List<int>() {
+                w1[0], w1[1], w1[3], w1[4]
+            };
+
+            Utils.Shuffle(weights);
+
+            weights1 = new List<int>() {
+                weights[0], weights[1], w1[2], weights[2], weights[3]
+            }.ToArray();
+
+            GenerateShapes(shapes, weights1);
+            GenerateRightPanel(shapes, weights1);
             set = true;
         }
         GenerateGame();
