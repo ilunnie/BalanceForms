@@ -73,7 +73,7 @@ public class HttpRequester
             response.EnsureSuccessStatusCode();
             // response.Dispose();
             System.Console.WriteLine(jsonContent);
-            MessageBox.Show(jsonContent);
+            // MessageBox.Show(jsonContent);
             return await response.Content.ReadAsStringAsync();
         }
         catch (Exception ex)
