@@ -16,7 +16,7 @@ public class TextInput : IInput
     private string _name;
     public string Name { get => _name; set => _name = value; }
 
-    private string _value;
+    protected string _value;
     public object Value
     {
         get => _value;
@@ -39,7 +39,7 @@ public class TextInput : IInput
 
     public string PlaceHolder { get; set; } = "";
     private int? _cursor = null;
-    private int Cursor
+    protected int Cursor
     {
         get
         {
@@ -184,7 +184,7 @@ public class TextInput : IInput
 
 
 
-    public void KeyBoardDown(object o, System.Windows.Forms.KeyEventArgs e)
+    public virtual void KeyBoardDown(object o, System.Windows.Forms.KeyEventArgs e)
     {
         if (!this.Enable || this.isDisabled)
             return;

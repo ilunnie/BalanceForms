@@ -77,7 +77,7 @@ public class Home : Page
                     BorderColor = Color.FromArgb(111, 111, 111),
                 },
             },
-            new TextInput(center.X - textInputWidth / 2, Screen.Height * .5f) {
+            new DateInput(center.X - textInputWidth / 2, Screen.Height * .5f) {
                 Name = "date",
                 PlaceHolder = "dd/mm/yyyy",
                 Size = new SizeF(textInputWidth, textInputHeight),
