@@ -12,6 +12,9 @@ public class DateInput : TextInput
 
     public override void KeyBoardDown(object o, KeyEventArgs e)
     {
+        if (!this.Enable || this.isDisabled)
+            return;
+            
         char character = '\0';
         if (e.KeyCode >= Keys.NumPad0 && e.KeyCode <= Keys.NumPad9)
         {
