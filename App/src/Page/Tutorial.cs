@@ -13,6 +13,7 @@ public class Tutorial : Game
 {
     public static int Attempts { get; private set; } = 0;
     public static List<(int template, int response)> Weights { get; private set; }
+    private static List<Type> types;
     private RectangleF RightPanel;
     private RectangleF LeftPanel;
     private RectangleF BetweenLabels;
@@ -236,10 +237,12 @@ public class Tutorial : Game
 
         Form form = new Form("Repostas");
 
+        types = new();
         labels = new();
         for (int i = 0; i < shapes.Length; i++)
         {
-            ConstructorInfo constructor = shapes[i].GetConstructor(new Type[] { typeof(int) });
+            Type shapetype = shapes[i];
+            ConstructorInfo constructor = shapetype.GetConstructor(new Type[] { typeof(int) });
             Object shape = (Object)constructor.Invoke(new object[] { weights[i] });
             Bitmap label = (Bitmap)shape.Image;
 
@@ -262,6 +265,7 @@ public class Tutorial : Game
 
             form.Append(input);
             labels.Add((label, rect));
+            types.Add(shapetype);
         }
 
         width = 200;
@@ -403,7 +407,7 @@ public class Tutorial : Game
             RectangleF form = new RectangleF(rect.X, rect.Y + (i * gap), rect.Width / 2, gap);
             RectangleF check = new RectangleF(rect.X + rect.Width / 2, rect.Y + (i * gap), rect.Width / 2, gap);
 
-            ConstructorInfo constructor = dict[i].GetConstructor(new Type[] { typeof(int) });
+            ConstructorInfo constructor = types[i].GetConstructor(new Type[] { typeof(int) });
             Object shape = (Object)constructor.Invoke(new object[] { 0 });
             string name = shape.Name;
             g.DrawString(
