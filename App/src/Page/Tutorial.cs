@@ -28,7 +28,7 @@ public class Tutorial : Game
     private Button toWeightButton;
     private Button toRespondButton;
 
-    private DateTime dt = DateTime.Now;
+    private DateTime dt = DateTime.MinValue;
 
     public override async void Load()
     {

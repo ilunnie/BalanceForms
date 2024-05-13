@@ -34,7 +34,7 @@ public class Level1 : Game
     private RectangleF ModalRect;
     private Form Modal;
 
-    private DateTime dt = DateTime.Now;
+    private DateTime dt = DateTime.MinValue;
 
     public override async void Load()
     {
