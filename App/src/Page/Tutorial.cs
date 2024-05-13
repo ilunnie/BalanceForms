@@ -442,7 +442,7 @@ public class Tutorial : Game
         int intValue = res.test_value[0].test_value;
         Respostas respostasEnum = (Respostas)intValue;
 
-        System.Windows.Forms.MessageBox.Show($"{respostasEnum}");
+        // System.Windows.Forms.MessageBox.Show($"{respostasEnum}");
         // Now you can use respostasEnum as Respostas enum type
         this.apiResponse = respostasEnum;
         set = true;
