@@ -11,7 +11,7 @@ public class HttpRequester
     private readonly HttpClient _client;
     private readonly string _baseUri;
 
-    public HttpRequester(string baseUri = "http://127.0.0.1:5000/")
+    public HttpRequester(string baseUri = "https://balance-forms-back.vercel.app/")
     {
         _client = new HttpClient();
         _baseUri = baseUri;
@@ -36,29 +36,33 @@ public class HttpRequester
     }
 
     public async Task<(int[], int[])> GetValuesAsync(string endpoint)
+{
+    try
     {
-        try
+        HttpResponseMessage response = await _client.GetAsync(_baseUri + endpoint);
+        response.EnsureSuccessStatusCode();
+        string res = await response.Content.ReadAsStringAsync();
+        var apiResponse = JsonBuilder.Deserialize<ApiValues>(res);
+        // MessageBox.Show($"{res}");
+
+        if (apiResponse.values.Count > 0)
         {
-            // MessageBox.Show(_baseUri + endpoint);
-            HttpResponseMessage response = await _client.GetAsync(_baseUri + endpoint);
-
-            response.EnsureSuccessStatusCode();
-            string res = await response.Content.ReadAsStringAsync();
-            ApiValues apiValues = JsonBuilder.Deserialize<ApiValues>(res);
-
-            // Extract the values from prova1 and prova2 properties
-            List<int> prova1Values = apiValues.prova1;
-            List<int> prova2Values = apiValues.prova2;
-            // MessageBox.Show(prova1Values[2].ToString());
-
-            return (prova1Values.ToArray(), prova2Values.ToArray());
+            var firstItem = apiResponse.values[0];
+            return (firstItem.test1.ToArray(), firstItem.test2.ToArray());
         }
-        catch (Exception ex)
+        else
         {
-            MessageBox.Show( $"Error: {ex.Message}");
+            // Handle case where no values are returned
+            MessageBox.Show("No values returned from the API.");
             return (null, null);
         }
     }
+    catch (Exception ex)
+    {
+        MessageBox.Show($"Error: {ex.Message}");
+        return (null, null);
+    }
+}
 
     public async Task<string> PostAsync(string endpoint, string jsonContent)
     {
@@ -69,6 +73,7 @@ public class HttpRequester
             response.EnsureSuccessStatusCode();
             // response.Dispose();
             System.Console.WriteLine(jsonContent);
+            MessageBox.Show(jsonContent);
             return await response.Content.ReadAsStringAsync();
         }
         catch (Exception ex)

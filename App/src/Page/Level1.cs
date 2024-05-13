@@ -34,12 +34,14 @@ public class Level1 : Game
     private RectangleF ModalRect;
     private Form Modal;
 
+    private DateTime dt = DateTime.Now;
+
     public override async void Load()
     {
         App.Background = Color.White;
 
         //! 🆄🆂🅴🅵🆄🅻 🆂🅴🆃🆃🅸🅽🅶🆂
-#region //! ■■■■■■■■■■■■■■■■■■■■■■■
+        #region //! ■■■■■■■■■■■■■■■■■■■■■■■
         PointF center = Screen.Center;
         float width = Screen.Width;
         float height = Screen.Height;
@@ -55,35 +57,8 @@ public class Level1 : Game
         ModalRect = new RectangleF(x, y, modalwidth, modalheight);
         //! ■■■■■■■■■■■■■■■■■■■■■■■
         #endregion
-        if (!set)
-        {
-            var (w1, w2) = await requester.GetValuesAsync("values");
-            weights2 = w2;
 
-            Type[] shapes =
-            {
-                typeof(Circle),
-                typeof(Hexagon),
-                typeof(Square),
-                typeof(Star),
-                typeof(Triangle)
-            };
-
-            List<int> weights = new List<int>() {
-                w1[0], w1[1], w1[3], w1[4]
-            };
-            Utils.Shuffle(weights);
-
-            weights1 = new List<int>() {
-                weights[0], weights[1], w1[2], weights[2], weights[3]
-            }.ToArray();
-
-            GenerateShapes(shapes, weights1);
-            GenerateRightPanel(shapes, weights1);
-            set = true;
-        }
         GenerateGame();
-
         TestTimer.Start();
         GenerateConfirmModal();
     }
@@ -168,8 +143,8 @@ public class Level1 : Game
         g.DrawString(xTitulo, titulo, fontComentario, brush, alignment: StringAlignment.Center);
         fontComentario = new Font("Arial", 16);
         float margin = 30;
-        RectangleF xTexto = new RectangleF(BetweenLabels.X + margin, xTitulo.Bottom, BetweenLabels.Width - margin * 2,  160);
-        g.DrawString(xTexto, texto, fontComentario, brush, wrap:true);
+        RectangleF xTexto = new RectangleF(BetweenLabels.X + margin, xTitulo.Bottom, BetweenLabels.Width - margin * 2, 160);
+        g.DrawString(xTexto, texto, fontComentario, brush, wrap: true);
 
 
 
@@ -331,7 +306,7 @@ public class Level1 : Game
         void Submit(object obj)
         {
             Balances.ForEach(balance => balance.ToWeight());
-            
+
             int count = Balances.Sum(balance => balance.Count);
             if (count != lastcount)
             {
@@ -369,9 +344,51 @@ public class Level1 : Game
 
     private async Task GetTestStatus()
     {
-        string testStatus = await requester.GetResAsync("test");
-        var res = JsonBuilder.DeserializeRes(testStatus);
-        this.apiResponse = res.response;
+        var now = DateTime.Now;
+        var diff = (now - dt).TotalSeconds;
+
+        if (diff < 2) return;
+        dt = now;
+
+        if (!set)
+        {
+            var (w1, w2) = await requester.GetValuesAsync("values/getvalues");
+            weights2 = w2;
+
+            Type[] shapes =
+            {
+                typeof(Circle),
+                typeof(Hexagon),
+                typeof(Square),
+                typeof(Star),
+                typeof(Triangle)
+            };
+
+            List<int> weights = new List<int>() {
+                w1[0], w1[1], w1[3], w1[4]
+            };
+            Utils.Shuffle(weights);
+
+            weights1 = new List<int>() {
+                weights[0], weights[1], w1[2], weights[2], weights[3]
+            }.ToArray();
+
+            GenerateShapes(shapes, weights1);
+            GenerateRightPanel(shapes, weights1);
+            set = true;
+        }
+
+        string testStatus = await requester.GetResAsync("test/gettest");
+
+        var res = JsonBuilder.Deserialize<ApiResponse>(testStatus);
+
+        int intValue = res.test_value[0].test_value;
+        Respostas respostasEnum = (Respostas)intValue;
+
+        // System.Windows.Forms.MessageBox.Show($"{respostasEnum}");
+        // Now you can use respostasEnum as Respostas enum type
+        this.apiResponse = respostasEnum;
+        set = true;
     }
 
     private void VerifyTestStatus()
@@ -446,7 +463,7 @@ public class Level1 : Game
         {
             string jsonPost = JsonBuilder.Serialize(jsonBuilder.Build());
             sent = true;
-            await requester.PostAsync("test", jsonPost);
+            await requester.PostAsync("player/postplayer", jsonPost);
             System.Windows.Forms.MessageBox.Show("Respostas Enviadas");
         }
     }

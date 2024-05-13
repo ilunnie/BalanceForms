@@ -22,17 +22,17 @@ public class Level2 : Game
     private int[] weights1;
     private int[] weights2;
 
-
     private HttpRequester requester = new();
     private Respostas apiResponse = Respostas.NComecado;
     private bool sent = false;
     private bool set = false;
     public static TestResult json;
 
-
     private bool ModalOn = false;
     private RectangleF ModalRect;
     private Form Modal;
+
+    private DateTime dt = DateTime.Now;
 
     public override async void Load()
     {
@@ -55,27 +55,7 @@ public class Level2 : Game
         ModalRect = new RectangleF(x, y, modalwidth, modalheight);
         //! ■■■■■■■■■■■■■■■■■■■■■■■
         #endregion
-        if (!set)
-        {
-            var (w1, w2) = await requester.GetValuesAsync("values");
-            weights1 = w1;
-            weights2 = w2;
-
-            Type[] shapes =
-            {
-                typeof(Circle),
-                typeof(Hexagon),
-                typeof(Square),
-                typeof(Star),
-                typeof(Triangle)
-            };
-            int[] weights = { 750, 1000, 500, 200, 100 };
-
-            // System.Windows.Forms.MessageBox.Show( weights);
-            GenerateShapes(shapes, w2);
-            GenerateRightPanel(shapes, w2);
-            set = true;
-        }
+        
         GenerateGame();
 
         TestTimer.Start();
@@ -363,6 +343,33 @@ public class Level2 : Game
 
     private async Task GetTestStatus()
     {
+        var now = DateTime.Now;
+        var diff = (now - dt).TotalSeconds;
+
+        if (diff < 2) return;
+        dt = now;
+
+        if (!set)
+        {
+            var (w1, w2) = await requester.GetValuesAsync("values/getvalues");
+            weights1 = w1;
+            weights2 = w2;
+
+            Type[] shapes =
+            {
+                typeof(Circle),
+                typeof(Hexagon),
+                typeof(Square),
+                typeof(Star),
+                typeof(Triangle)
+            };
+            int[] weights = { 750, 1000, 500, 200, 100 };
+
+            // System.Windows.Forms.MessageBox.Show( weights);
+            GenerateShapes(shapes, w2);
+            GenerateRightPanel(shapes, w2);
+            set = true;
+        }
         string testStatus = await requester.GetResAsync("test");
         var res = JsonBuilder.DeserializeRes(testStatus);
         this.apiResponse = res.response;
@@ -374,12 +381,12 @@ public class Level2 : Game
         {
             if (!sent)
                 System.Windows.Forms.MessageBox.Show("O Teste Acabou! Suas respostas foram enviadas automaticamente");
-            SendJson();
+            SendJson(true);
             App.Close();
         }
     }
 
-    private async void SendJson()
+    private async void SendJson(bool send)
     {
         int CountEqualNumbers(List<(int, int)> tuples)
         {
@@ -399,7 +406,7 @@ public class Level2 : Game
 
         Weights = new List<(int template, int response)>();
 
-        for (int i = 0; i < weights2.Length; i++)
+        for (int i = 0; i < weights1.Length; i++)
         {
             int response;
             if (!int.TryParse(body[$"input_{i}"].Value.ToString(), out response))
@@ -432,10 +439,13 @@ public class Level2 : Game
             )
             .Build();
         json = jsonBuilder.Build();
-        string jsonPost = JsonBuilder.Serialize(jsonBuilder.Build());
-        sent = true;
-        await requester.PostAsync("test", jsonPost);
-        System.Windows.Forms.MessageBox.Show("Respostas Enviadas");
+        if (send)
+        {
+            string jsonPost = JsonBuilder.Serialize(jsonBuilder.Build());
+            sent = true;
+            await requester.PostAsync("player/postplayer", jsonPost);
+            System.Windows.Forms.MessageBox.Show("Respostas Enviadas");
+        }
     }
 
     private void DrawModal(Graphics g)
@@ -467,7 +477,7 @@ public class Level2 : Game
         void cancel(object obj) => ModalOn = false;
         void submit(object obj)
         {
-            SendJson();
+            SendJson(true);
             ModalOn = false;
             App.SetPage(new Close());
         }

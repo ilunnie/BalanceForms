@@ -28,12 +28,14 @@ public class Tutorial : Game
     private Button toWeightButton;
     private Button toRespondButton;
 
+    private DateTime dt = DateTime.Now;
+
     public override async void Load()
     {
         App.Background = Color.White;
 
         //! 🆄🆂🅴🅵🆄🅻 🆂🅴🆃🆃🅸🅽🅶🆂
-#region //! ■■■■■■■■■■■■■■■■■■■■■■■
+        #region //! ■■■■■■■■■■■■■■■■■■■■■■■
         PointF center = Screen.Center;
         float width = Screen.Width;
         float height = Screen.Height;
@@ -49,8 +51,6 @@ public class Tutorial : Game
         ModalRect = new RectangleF(x, y, modalwidth, modalheight);
         //! ■■■■■■■■■■■■■■■■■■■■■■■
         #endregion
-    
-        await GetTestStatus();
 
         Type[] shapes = { typeof(Circle), typeof(Square), typeof(Triangle) };
         int[] weights = { 300, 200, 100 };
@@ -144,8 +144,8 @@ public class Tutorial : Game
         g.DrawString(xTitulo, titulo, fontComentario, brush, alignment: StringAlignment.Center);
         fontComentario = new Font("Arial", 16);
         float margin = 30;
-        RectangleF xTexto = new RectangleF(BetweenLabels.X + margin, xTitulo.Bottom, BetweenLabels.Width - margin * 2,  160);
-        g.DrawString(xTexto, texto, fontComentario, brush, wrap:true);
+        RectangleF xTexto = new RectangleF(BetweenLabels.X + margin, xTitulo.Bottom, BetweenLabels.Width - margin * 2, 160);
+        g.DrawString(xTexto, texto, fontComentario, brush, wrap: true);
 
 
         shadow.Dispose();
@@ -393,8 +393,8 @@ public class Tutorial : Game
         g.DrawString(title_box, "Valores inseridos:", title, Brushes.Black, alignment: StringAlignment.Center);
 
         Font font = new Font("Arial", 20);
-        RectangleF rect = new RectangleF(ModalRect.Left, title_box.Bottom, ModalRect.Width, ModalRect.Height *.38f);
-        
+        RectangleF rect = new RectangleF(ModalRect.Left, title_box.Bottom, ModalRect.Width, ModalRect.Height * .38f);
+
         var dict = DictObjects.Keys.ToList();
 
         float gap = rect.Height / (Weights.Count + 1);
@@ -430,11 +430,24 @@ public class Tutorial : Game
 
     private async Task GetTestStatus()
     {
-        string testStatus = await requester.GetResAsync("test");
-        var res = JsonBuilder.DeserializeRes(testStatus);
-        this.apiResponse = res.response;
+        var now = DateTime.Now;
+        var diff = (now - dt).TotalSeconds;
+
+        if (diff < 2) return;
+        dt = now;
+        string testStatus = await requester.GetResAsync("test/gettest");
+
+        var res = JsonBuilder.Deserialize<ApiResponse>(testStatus);
+
+        int intValue = res.test_value[0].test_value;
+        Respostas respostasEnum = (Respostas)intValue;
+
+        System.Windows.Forms.MessageBox.Show($"{respostasEnum}");
+        // Now you can use respostasEnum as Respostas enum type
+        this.apiResponse = respostasEnum;
         set = true;
     }
+
     private void VerifyTestStatus()
     {
         if (this.apiResponse == Respostas.Comecado)
