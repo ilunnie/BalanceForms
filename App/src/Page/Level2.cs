@@ -370,19 +370,29 @@ public class Level2 : Game
             GenerateRightPanel(shapes, w2);
             set = true;
         }
-        string testStatus = await requester.GetResAsync("test");
-        var res = JsonBuilder.DeserializeRes(testStatus);
-        this.apiResponse = res.response;
+        
+        string testStatus = await requester.GetResAsync("test/gettest");
+
+        var res = JsonBuilder.Deserialize<ApiResponse>(testStatus);
+
+        int intValue = res.test_value[0].test_value;
+        Respostas respostasEnum = (Respostas)intValue;
+
+        // System.Windows.Forms.MessageBox.Show($"{respostasEnum}");
+        // Now you can use respostasEnum as Respostas enum type
+        this.apiResponse = respostasEnum;
+        set = true;
     }
 
     private void VerifyTestStatus()
     {
         if (this.apiResponse == Respostas.Parou)
         {
+            SendJson(true);
             if (!sent)
                 System.Windows.Forms.MessageBox.Show("O Teste Acabou! Suas respostas foram enviadas automaticamente");
-            SendJson(true);
-            App.Close();
+            App.SetPage(new Close());
+
         }
     }
 
